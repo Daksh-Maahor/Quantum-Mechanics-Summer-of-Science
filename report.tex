@@ -1,0 +1,214 @@
+\documentclass[12pt,a4paper]{report}
+
+% -------------------------------------------------
+% Packages
+% -------------------------------------------------
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{physics}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{titlesec}
+
+% -------------------------------------------------
+% Header & Footer
+% -------------------------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Quantum Mechanics Report}
+\fancyhead[R]{\leftmark}
+\fancyfoot[C]{\thepage}
+
+\setlength{\headheight}{15pt}
+
+% -------------------------------------------------
+% Spacing
+% -------------------------------------------------
+\onehalfspacing
+
+% -------------------------------------------------
+% Title Information
+% -------------------------------------------------
+\title{
+    \vspace{3cm}
+    \Huge\textbf{QUANTUM MECHANICS}\\[1cm]
+    \Large Mid-Term Report
+}
+
+\author{
+    \textbf{Daksh Maahor} \\[0.3cm]
+    25B0974 \\[0.3cm]
+    Computer Science and Engineering \\[0.3cm]
+    Mentor: Sourav Sreenath \\[0.3cm]
+    Indian Institute of Technology Bombay
+}
+
+\date{\today}
+
+% -------------------------------------------------
+% Document
+% -------------------------------------------------
+\begin{document}
+
+% -------------------------------------------------
+% Cover Page
+% -------------------------------------------------
+\begin{titlepage}
+\centering
+
+\vspace*{2cm}
+
+{\Large SUMMER OF SCIENCE 2026\\[0.2cm]
+MID-TERM REPORT}
+
+\vspace{1.5cm}
+\rule{0.8\textwidth}{0.5pt}
+
+\vspace{1cm}
+
+{\Huge\bfseries QUANTUM MECHANICS}
+
+\vspace{1cm}
+
+\rule{0.8\textwidth}{0.5pt}
+
+\vfill
+
+{\Large
+\textbf{Daksh Maahor}\\
+25B0974\\
+Computer Science and Engineering\\
+1st Year (2026)\\[0.5cm]
+
+Mentor: Sourav Sreenath\\
+Indian Institute of Technology Bombay
+}
+
+\vfill
+
+\end{titlepage}
+
+% -------------------------------------------------
+% Table of Contents
+% -------------------------------------------------
+\tableofcontents
+\clearpage
+
+% -------------------------------------------------
+% Chapter 1
+% -------------------------------------------------
+\chapter{Introduction to Quantum Mechanics}
+
+\section{Introduction}
+
+Write your content here.
+
+\section{Wave Function}
+
+Write your content here.
+
+\section{Probability Interpretation}
+
+Write your content here.
+
+% -------------------------------------------------
+% Chapter 2
+% -------------------------------------------------
+\chapter{Schrödinger Equation}
+
+\section{Time-Dependent Schrödinger Equation}
+
+Write your content here.
+
+\begin{equation}
+i\hbar \frac{\partial \psi}{\partial t}
+=
+\hat H \psi
+\end{equation}
+
+\section{Time-Independent Schrödinger Equation}
+
+Write your content here.
+
+% -------------------------------------------------
+% Chapter 3
+% -------------------------------------------------
+\chapter{Mathematical Foundations}
+
+\section{Hilbert Space}
+
+Write your content here.
+
+\section{Operators}
+
+Write your content here.
+
+\section{Commutators}
+
+Write your content here.
+
+\begin{equation}
+[\hat x,\hat p] = i\hbar
+\end{equation}
+
+% -------------------------------------------------
+% Chapter 4
+% -------------------------------------------------
+\chapter{Applications}
+
+\section{Infinite Potential Well}
+
+Write your content here.
+
+\section{Harmonic Oscillator}
+
+Write your content here.
+
+\section{Hydrogen Atom}
+
+Write your content here.
+
+% -------------------------------------------------
+% Figures Example
+% -------------------------------------------------
+\chapter{Figures and Illustrations}
+
+\begin{figure}[H]
+\centering
+%\includegraphics[width=0.7\textwidth]{figure_name}
+\caption{Caption goes here}
+\label{fig:example}
+\end{figure}
+
+% -------------------------------------------------
+% Conclusion
+% -------------------------------------------------
+\chapter{Conclusion}
+
+Write your conclusion here.
+
+% -------------------------------------------------
+% References
+% -------------------------------------------------
+\begin{thebibliography}{99}
+
+\bibitem{griffiths}
+David J. Griffiths,
+\textit{Introduction to Quantum Mechanics},
+3rd Edition.
+
+\bibitem{sakurai}
+J. J. Sakurai,
+\textit{Modern Quantum Mechanics}.
+
+\bibitem{shankar}
+R. Shankar,
+\textit{Principles of Quantum Mechanics}.
+
+\end{thebibliography}
+
+\end{document}
