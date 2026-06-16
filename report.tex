@@ -15,6 +15,11 @@
 \usepackage{titlesec}
 
 % -------------------------------------------------
+% Custom Commands
+% -------------------------------------------------
+\newcommand{\vecspace}[1]{\mathbb{#1}}
+
+% -------------------------------------------------
 % Header & Footer
 % -------------------------------------------------
 \pagestyle{fancy}
@@ -22,6 +27,8 @@
 \fancyhead[L]{Quantum Mechanics Report}
 \fancyhead[R]{\leftmark}
 \fancyfoot[C]{\thepage}
+
+\hypersetup{pdfborder=0 0 0}
 
 \setlength{\headheight}{15pt}
 
@@ -101,95 +108,411 @@ Indian Institute of Technology Bombay
 % -------------------------------------------------
 % Chapter 1
 % -------------------------------------------------
-\chapter{Introduction to Quantum Mechanics}
+\chapter{Mathematical Foundation}
 
-\section{Introduction}
+\section{Introduction to Linear Vector Spaces}
 
-Write your content here.
+A Linear Vector Space $\vecspace{V}$ is a mathematical structure that allows for the addition of vectors and multiplication by scalars. It contains a collection of objects called vectors, which have:
 
-\section{Wave Function}
+\begin{itemize}
+    \item A definite rule for forming a vector sum $\ket{V} + \ket{W}$.
+    \item A definite rule for forming a scalar product $c\ket{V}$, where $c$ is a complex number.
+\end{itemize}
+and the following features:
+\begin{itemize}
+    \item Closure under addition: If $\ket{V}$ and $\ket{W}$ are in $\vecspace{V}$, then $\ket{V} + \ket{W}$ is also in $\vecspace{V}$.
+    \item Distributivity of scalar multiplication: $c(\ket{V} + \ket{W}) = c\ket{V} + c\ket{W}$.
+    \item Distributivity of scalar multiplication with respect to field addition: $(c + d)\ket{V} = c\ket{V} + d\ket{V}$, where $c$ and $d$ are scalars.
+    \item Commutativity of vector addition: $\ket{V} + \ket{W} = \ket{W} + \ket{V}$.
+    \item Associativity of vector addition: $(\ket{V} + \ket{W}) + \ket{Z} = \ket{V} + (\ket{W} + \ket{Z})$.
+    \item Existence of an additive identity: There exists a vector $\ket{0}$ such that $\ket{V} + \ket{0} = \ket{V}$.
+    \item Existence of additive inverse: For every vector $\ket{V}$, there exists a vector $-\ket{V}$ such that $\ket{V} + \ket{-V} = \ket{0}$.
+\end{itemize}
 
-Write your content here.
+\subsection{Inner Product Spaces}
 
-\section{Probability Interpretation}
+The inner product is a mathematical operation that takes two vectors and produces a scalar. It is denoted as $\bra{V}\ket{W}$ and had the following properties:
+\begin{itemize}
+    \item Conjugate symmetry: $\bra{V}\ket{W} = \bra{W}\ket{V}^*$.
+    \item Linearity in the second argument: $\bra{V}\ket{aW + bX} = a\bra{V}\ket{W} + b\bra{V}\ket{X}$.
+    \item Conjugate Linearity in the first argument: $\bra{cW + dZ}\ket{V} = c^*\bra{W}\ket{V} + d^*\bra{Z}\ket{V}$.
+    \item Positive definiteness: $\bra{V}\ket{V} \geq 0$ and $\bra{V}\ket{V} = 0$ if and only if $\ket{V} = \ket{0}$.
+\end{itemize}
 
-Write your content here.
+Two vectors $\ket{V}$ and $\ket{W}$ are said to be orthogonal if their inner product is zero, i.e., $\bra{V}\ket{W} = 0$.
 
-% -------------------------------------------------
-% Chapter 2
-% -------------------------------------------------
-\chapter{Schrödinger Equation}
+Also we define the norm of a vector $\ket{V}$ as $\|V\| = \sqrt{\bra{V}\ket{V}}$. A vector with unit norm is called a unit vector.
+Two important inequalities related to inner product spaces are:
 
-\section{Time-Dependent Schrödinger Equation}
+\begin{itemize}
+    \item Cauchy-Schwarz Inequality: $|\bra{V}\ket{W}| \leq \|V\| \|W\|$.
+    \item Triangle Inequality: $\|V + W\| \leq \|V\| + \|W\|$.
+\end{itemize}
 
-Write your content here.
+\subsection{Basis Vectors}
 
-\begin{equation}
-i\hbar \frac{\partial \psi}{\partial t}
-=
-\hat H \psi
-\end{equation}
+A set of vectors $\{\ket{e_1}, \ket{e_2}, \ldots, \ket{e_n}\}$ is called a basis for a vector space $\vecspace{V}$ if every vector in $\vecspace{V}$ can be expressed as a linear combination of the basis vectors. For example, if $\vecspace{V}^3$ is a 3-dimensional vector space, then any vector $\ket{V} \in \vecspace{V}^3$ can be written as:
+\begin{equation*}
+    \ket{V} = v_1\ket{e_1} + v_2\ket{e_2} + v_3\ket{e_3}
+\end{equation*}
+where $v_1$, $v_2$, and $v_3$ are complex numbers called the components of the vector $\ket{V}$ in the basis $\{\ket{e_1}, \ket{e_2}, \ket{e_3}\}$.
 
-\section{Time-Independent Schrödinger Equation}
+A basis is called orthonormal if the basis vectors are orthogonal to each other and each basis vector has a unit norm. In an orthonormal basis, the inner product of two basis vectors is given by:
+\begin{equation*}
+    \bra{i}\ket{j} = \delta_{ij}
+\end{equation*}
+where $\delta_{ij}$ is the Kronecker delta symbol, defined as:
+\begin{equation*}
+    \delta_{ij} = \begin{cases}
+        1 & \text{if } i = j \\
+        0 & \text{if } i \neq j
+    \end{cases}
+\end{equation*}
 
-Write your content here.
+The component of a vector $\ket{V}$ in the direction of a basis vector $\ket{j}$ can be calculated using the inner product:
+\begin{equation*}
+    v_j = \bra{j}\ket{V}
+\end{equation*}
 
-% -------------------------------------------------
-% Chapter 3
-% -------------------------------------------------
-\chapter{Mathematical Foundations}
+Thus, in any basis, we can express a vector $\ket{V}$ as:
 
-\section{Hilbert Space}
+\begin{equation*}
+    \ket{V} = \sum_{j} \ket{j}\bra{j}\ket{V}
+\end{equation*}
 
-Write your content here.
+Consider two vectors $\ket{V}$ and $\ket{W}$ expanded in a basis as:
 
-\section{Operators}
+\begin{equation*}
+    \ket{V} = \sum_{i} v_i \ket{i}
+\end{equation*}
 
-Write your content here.
+\begin{equation*}
+    \ket{W} = \sum_{j} w_j \ket{j}
+\end{equation*}
 
-\section{Commutators}
+The inner product can be expanded as:
 
-Write your content here.
+\begin{equation*}
+    \bra{V}\ket{W} = \left( \sum_{i} v_i^* \bra{i} \right) \left( \sum_{j} w_j \ket{j} \right) = \sum_{i,j} v_i^* w_j \bra{i}\ket{j}
+\end{equation*}
 
-\begin{equation}
-[\hat x,\hat p] = i\hbar
-\end{equation}
+Now if the basis was orthonormal, then $\bra{i}\ket{j} = \delta_{ij}$, and the inner product simplifies to:
 
-% -------------------------------------------------
-% Chapter 4
-% -------------------------------------------------
-\chapter{Applications}
+\begin{equation*}
+    \bra{V}\ket{W} = \sum_{i} v_i^* w_i
+\end{equation*}
 
-\section{Infinite Potential Well}
+From now on, we will assume that all bases are orthonormal unless otherwise specified.
 
-Write your content here.
+\subsection{Matrix Representation of Vectors}
 
-\section{Harmonic Oscillator}
+The basis ket $\ket{i}$ is represented as a column vector with a 1 in the $i$-th position and 0s elsewhere.
 
-Write your content here.
+In a finite-dimensional vector space, we can represent vectors as column matrices. For example, if $\vecspace{V}^3$ is a 3-dimensional vector space, a vector $\ket{V} \in \vecspace{V}^3$ can be represented as:
+\begin{equation*}
+    \ket{V} = v_1 \ket{1} + v_2 \ket{2} + v_3 \ket{3} = v_1 \begin{bmatrix}
+        1 \\
+        0 \\
+        0
+    \end{bmatrix} + v_2 \begin{bmatrix}
+        0 \\
+        1 \\
+        0
+    \end{bmatrix} + v_3 \begin{bmatrix}
+        0 \\
+        0 \\
+        1
+    \end{bmatrix} = \begin{bmatrix}
+        v_1 \\
+        v_2 \\
+        v_3
+    \end{bmatrix}
+\end{equation*}
 
-\section{Hydrogen Atom}
+\subsection{Adjoint of a Vector}
 
-Write your content here.
+The adjoint of a vector $\ket{V}$, denoted as $\bra{V}$, is the conjugate transpose of the vector. If $\ket{V}$ is represented as a column matrix, then $\bra{V}$ is represented as a row matrix:
 
-% -------------------------------------------------
-% Figures Example
-% -------------------------------------------------
-\chapter{Figures and Illustrations}
+\begin{equation*}
+    \bra{V} = \begin{bmatrix}
+        v_1^* & v_2^* & v_3^*
+    \end{bmatrix}
+\end{equation*}
 
-\begin{figure}[H]
-\centering
-%\includegraphics[width=0.7\textwidth]{figure_name}
-\caption{Caption goes here}
-\label{fig:example}
-\end{figure}
+With that representation, the inner product of two n-dimensional vectors $\ket{V}$ and $\ket{W}$ can be calculated as:
+\begin{equation*}
+    \bra{V}\ket{W} = \begin{bmatrix}
+        v_1^* & v_2^* & v_3^* & \ldots & v_n^*
+    \end{bmatrix}
+    \begin{bmatrix}
+        w_1 \\
+        w_2 \\
+        \vdots \\
+        w_n
+    \end{bmatrix}
+    = v_1^*w_1 + v_2^*w_2 + \cdots + v_n^*w_n
+\end{equation*}
 
-% -------------------------------------------------
-% Conclusion
-% -------------------------------------------------
-\chapter{Conclusion}
+Some properties of the adjoint operation are:
+\begin{itemize}
+    \item $(\ket{V} + \ket{W})^\dagger = \bra{V} + \bra{W}$.
+    \item $(c\ket{V})^\dagger = \bra{V} c^*$, where $c$ is a complex number.
+\end{itemize}
 
-Write your conclusion here.
+\subsection{Vector Subspaces}
+
+A subspace $\vecspace{W}$ of a vector space $\vecspace{V}$ is a subset of $\vecspace{V}$ that is itself a vector space under the same operations of addition and scalar multiplication. For $\vecspace{W}$ to be a subspace of $\vecspace{V}$, it must satisfy the following conditions:
+\begin{itemize}
+    \item The zero vector $\ket{0}$ of $\vecspace{V}$ is in $\vecspace{W}$.
+    \item If $\ket{V}$ and $\ket{W}$ are in $\vecspace{W}$, then $\ket{V} + \ket{W}$ is also in $\vecspace{W}$ (closure under addition).
+    \item If $\ket{V}$ is in $\vecspace{W}$ and $c$ is a scalar, then $c\ket{V}$ is also in $\vecspace{W}$ (closure under scalar multiplication).
+\end{itemize}
+A vector subspace of dimension $n$ is denoted as $\vecspace{V}^n$. Given two vector subspaces $\vecspace{V}^n$ and $\vecspace{W}^m$, we can form their direct sum $\vecspace{V}^n \oplus \vecspace{W}^m$, which is a vector space of dimension $n + m$. This sum is defined as the set of all vectors that can be written as $\ket{V} + \ket{W}$, where $\ket{V} \in \vecspace{V}^n$ and $\ket{W} \in \vecspace{W}^m$.
+\section{Linear Operators}
+An operator $\hat{\Omega}$ is an instruction to transform any vector $\ket{V}$ to another vector $\ket{V'}$.
+\begin{equation*}
+    \hat{\Omega} \ket{V} = \ket{V'}
+\end{equation*}
+Operators can also act on bras in similar way:
+\begin{equation*}
+    \bra{V} \hat{\Omega} = \bra{V'}
+\end{equation*}
+An operator is called a linear operator if it satisfies the following properties:
+\begin{itemize}
+    \item Linearity in kets: $\hat{\Omega}(a\ket{V} + b\ket{W}) = a\hat{\Omega}\ket{V} + b\hat{\Omega}\ket{W}$, where $a$ and $b$ are scalars.
+    \item Linearity in bras: $(\bra{V}a + \bra{W}b) \hat{\Omega} = \bra{V}\hat{\Omega} a + \bra{W} \hat{\Omega} b$, where $a$ and $b$ are scalars.
+\end{itemize}
+
+\subsection{Some useful Linear Operators}
+
+\begin{itemize}
+
+\item Identity Operator
+
+The Identity operator $\hat{I}$ is the operator which maps every vector to itself:
+\begin{align*}
+    \hat{I} \ket{V} = \ket{V} \\
+    \bra{V} \hat{I} = \bra{V}
+\end{align*}
+
+\item Rotation Operator
+
+The operator $\hat{R}(\frac{\pi}{2}i)$ is the operator which rotates every vector by $\frac{\pi}{2}$ radians about the $i$-th axis. For example, in a 3-dimensional vector space, the operator $\hat{R}(\frac{\pi}{2}z)$ rotates every vector by $\frac{\pi}{2}$ radians about the $z$-axis.
+Its effect on the basis vectors is given by:
+\begin{align*}
+    \hat{R}(\frac{\pi}{2}z) \ket{1} = \ket{2} \\
+    \hat{R}(\frac{\pi}{2}z) \ket{2} = -\ket{1} \\
+    \hat{R}(\frac{\pi}{2}z) \ket{3} = \ket{3}
+\end{align*}
+
+More generally, the operator $\hat{R}(\vec{\theta})$ represents a rotation by an angle $|\vec{\theta}|$ about the axis defined by the vector $\hat{\theta} = \frac{\vec{\theta}}{|\vec{\theta}|}$.
+
+\item Projection Operator
+
+Consider a vector $\ket{V}$. In a given basis, we can express $\ket{V}$ as:
+\begin{equation*}
+    \ket{V} = \sum_{i} \ket{i}v_i
+\end{equation*}
+
+Here, $v_i$ is the component of $\ket{V}$ in the direction of the basis vector $\ket{i}$, which can be written as $v_i = \bra{i}\ket{V}$. Thus,
+\begin{equation*}
+    \ket{V} = \sum_{i} \ket{i}\bra{i}\ket{V} = \left(\sum_{i} \ket{i}\bra{i} \right)\ket{V} = \hat{I} \ket{V}
+\end{equation*}
+
+Now, since this is true for any vector $\ket{V}$, we can write:
+\begin{equation*}
+    \hat{I} = \sum_{i} \ket{i}\bra{i} = \sum_{i} \hat{P}_i
+\end{equation*}
+
+Here, the operator $\hat{P}_i = \ket{i}\bra{i}$ is called the projection operator onto the basis vector $\ket{i}$. The projection operator $\hat{P}_i$ has the following properties:
+\begin{itemize}
+    \item $\hat{P}_i^2 = \hat{P}_i$
+    \item $\hat{P}_i \hat{P}_j = \delta_{ij}$
+    \item $\hat{P}_i \ket{V} = v_i \ket{i}$, which is the projection of $\ket{V}$ onto the basis vector $\ket{i}$.
+\end{itemize}
+
+\end{itemize}
+
+\subsection{Matrix Representation of Operators}
+
+For a linear operator $\hat{\Omega}$, given a basis $\ket{1}, \ket{2}, \ldots, \ket{n}$ for a vector space $\vecspace{V}^n$, and for any vector $\ket{V} \in \vecspace{V}^n$, we can express $\ket{V}$ as:
+\begin{equation*}
+    \ket{V} = \sum_{i} v_i \ket{i}
+\end{equation*}
+Then the action of the operator $\hat{\Omega}$ on $\ket{V}$ can be expressed as:
+\begin{equation*}
+    \hat{\Omega} \ket{V} = \hat{\Omega} \left( \sum_{i} v_i \ket{i} \right) = \sum_{i} v_i \hat{\Omega} \ket{i} = \sum_{i} v_i \ket{i'}
+\end{equation*}
+where $\ket{i'} = \hat{\Omega} \ket{i}$.
+
+The operator $\hat{\Omega}$ can be represented as a matrix $\Omega$ in the basis $\ket{1}, \ket{2}, \ldots, \ket{n}$, where the $j$-th column of $\Omega$ is given by the vector $\ket{j'} = \hat{\Omega} \ket{j}$ expressed in the basis. Thus, we can write:
+\begin{equation*}
+    \Omega_{ji} = \bra{j}\hat{\Omega}\ket{i}
+\end{equation*}
+
+Using the fact that $\ket{i'} = \hat{\Omega} \ket{i}$, we can also write the matrix elements as:
+\begin{equation*}
+    \Omega = \begin{bmatrix}
+        \bra{1}\hat{\Omega}\ket{1} & \bra{1}\hat{\Omega}\ket{2} & \cdots & \bra{1}\hat{\Omega}\ket{n} \\
+        \bra{2}\hat{\Omega}\ket{1} & \bra{2}\hat{\Omega}\ket{2} & \cdots & \bra{2}\hat{\Omega}\ket{n} \\
+        \vdots & \vdots & \ddots & \vdots \\
+        \bra{n}\hat{\Omega}\ket{1} & \bra{n}\hat{\Omega}\ket{2} & \cdots & \bra{n}\hat{\Omega}\ket{n}
+    \end{bmatrix}
+\end{equation*}
+
+This is the matrix representation of the operator $\hat{\Omega}$ in the basis $\ket{1}, \ket{2}, \ldots, \ket{n}$. In this representation, the action of the operator $\hat{\Omega}$ on a vector $\ket{V}$ can be calculated using matrix multiplication:
+\begin{equation*}
+    \ket{V'} = \Omega \ket{V}
+\end{equation*}
+\begin{equation*}
+    \begin{bmatrix}
+        v'_1 \\
+        v'_2 \\
+        \vdots \\
+        v'_n
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        \bra{1}\hat{\Omega}\ket{1} & \bra{1}\hat{\Omega}\ket{2} & \cdots & \bra{1}\hat{\Omega}\ket{n} \\
+        \bra{2}\hat{\Omega}\ket{1} & \bra{2}\hat{\Omega}\ket{2} & \cdots & \bra{2}\hat{\Omega}\ket{n} \\
+        \vdots & \vdots & \ddots & \vdots \\
+        \bra{n}\hat{\Omega}\ket{1} & \bra{n}\hat{\Omega}\ket{2} & \cdots & \bra{n}\hat{\Omega}\ket{n}
+    \end{bmatrix}
+    \begin{bmatrix}
+        v_1 \\
+        v_2 \\
+        \vdots \\
+        v_n
+    \end{bmatrix}
+\end{equation*}
+
+Multiplying two operators $\hat{\Omega}$ and $\hat{\Lambda}$ corresponds to multiplying their matrix representations, and can be interpreted as first applying $\hat{\Omega}$ to a vector and then applying $\hat{\Lambda}$ to the result. Thus, we have:
+\begin{equation*}
+    \hat{(\Lambda\Omega)} \ket{V} = \hat{\Lambda} (\hat{\Omega} \ket{V})
+\end{equation*}
+
+The order of operations is important. In general, $\hat{\Lambda}\hat{\Omega} \neq \hat{\Omega}\hat{\Lambda}$, and we define a new operator called the commutator of $\hat{\Omega}$ and $\hat{\Lambda}$ as:
+\begin{equation*}
+    [\hat{\Omega}, \hat{\Lambda}] = \hat{\Omega}\hat{\Lambda} - \hat{\Lambda}\hat{\Omega}
+\end{equation*}
+
+Some properties of the commutator are:
+\begin{itemize}
+    \item $[\hat{\Omega}, \hat{\Lambda}] = -[\hat{\Lambda}, \hat{\Omega}]$.
+    \item $[\hat{\Omega}, \hat{\Lambda} + \hat{\Theta}] = [\hat{\Omega}, \hat{\Lambda}] + [\hat{\Omega}, \hat{\Theta}]$.
+    \item $[\hat{\Omega} + \hat{\Theta}, \hat{\Lambda}] = [\hat{\Omega}, \hat{\Lambda}] + [\hat{\Theta}, \hat{\Lambda}]$.
+    \item $[\hat{\Omega}, c\hat{\Lambda}] = c[\hat{\Omega}, \hat{\Lambda}]$, where $c$ is a scalar.
+    \item $[c\hat{\Omega}, \hat{\Lambda}] = c[\hat{\Omega}, \hat{\Lambda}]$, where $c$ is a scalar.
+    \item $[\hat{\Omega}, \hat{\Lambda}\hat{\Theta}] = [\hat{\Omega}, \hat{\Lambda}]\hat{\Theta} + \hat{\Lambda}[\hat{\Omega}, \hat{\Theta}]$.
+    \item $[\hat{\Omega}\hat{\Lambda}, \hat{\Theta}] = \hat{\Omega}[\hat{\Lambda}, \hat{\Theta}] + [\hat{\Omega}, \hat{\Theta}]\hat{\Lambda}$.
+\end{itemize}
+
+The inverse of an operator $\hat{\Omega}$, if exists, is denoted as $\hat{\Omega}^{-1}$ and is the operator that satisfies the following conditions:
+\begin{equation*}
+    \hat{\Omega}^{-1} \hat{\Omega} = \hat{\Omega} \hat{\Omega}^{-1} = \hat{I}
+\end{equation*}
+\begin{equation*}
+    \hat{(\Omega\Lambda)}^{-1} = \hat{\Lambda}^{-1} \hat{\Omega}^{-1}
+\end{equation*}
+
+\subsection{Adjoint of an Operator}
+
+The adjoint of an operator $\hat{\Omega}$, denoted as $\hat{\Omega}^\dagger$, is the operator that satisfies the following condition for all vectors $\ket{V}$ and $\ket{W}$:
+
+\begin{equation*}
+    \bra{V}\hat{\Omega}\ket{W} = \bra{W}\hat{\Omega}^\dagger\ket{V}^*
+\end{equation*}
+
+Now, we have
+
+\begin{equation*}
+    \Omega^\dagger_{ij} = \bra{i}\hat{\Omega}^\dagger\ket{j} = \bra{j}\hat{\Omega}\ket{i}^* = \Omega_{ji}^*
+\end{equation*}
+
+Thus, the matrix representation of the adjoint operator $\hat{\Omega}^\dagger$ is the conjugate transpose of the matrix representation of $\hat{\Omega}$.
+
+
+Some properties of the adjoint operation are:
+\begin{itemize}
+    \item $(\hat{\Omega} + \hat{\Lambda})^\dagger = \hat{\Omega}^\dagger + \hat{\Lambda}^\dagger$.
+    \item $(c\hat{\Omega})^\dagger = \hat{\Omega}^\dagger c^*$, where $c$ is a scalar.
+    \item $(\hat{\Omega}\hat{\Lambda})^\dagger = \hat{\Lambda}^\dagger \hat{\Omega}^\dagger$.
+    \item $(\hat{\Omega}^\dagger)^\dagger = \hat{\Omega}$.
+\end{itemize}
+
+\subsection{Special Types of Operators}
+
+\begin{itemize}
+
+\item Hermitian and Anti-Hermitian Operators
+
+An operator $\hat{\Omega}$ is called Hermitian if it is equal to its adjoint, i.e., $\hat{\Omega} = \hat{\Omega}^\dagger$.
+An operator $\hat{\Omega}$ is called anti-Hermitian if it is equal to the negative of its adjoint, i.e., $\hat{\Omega} = -\hat{\Omega}^\dagger$.
+
+Any operator $\hat{\Omega}$ can be expressed as a sum of a Hermitian operator and an anti-Hermitian operator:
+\begin{equation*}
+    \hat{\Omega} = \frac{1}{2}(\hat{\Omega} + \hat{\Omega}^\dagger) + \frac{1}{2}(\hat{\Omega} - \hat{\Omega}^\dagger)
+\end{equation*}
+
+\item Unitary Operators
+
+An operator $\hat{U}$ is called unitary if it satisfies the following condition:
+\begin{equation*}
+    \hat{U}^\dagger \hat{U} = \hat{U} \hat{U}^\dagger = \hat{I}
+\end{equation*}
+
+Unitary operators represent transformations that preserve the inner product, and thus preserve the norm of vectors. They are often used to represent symmetries and time evolution in quantum mechanics.
+
+To show that unitary operators preserve the inner product, we can calculate the inner product of two vectors $\ket{V}$ and $\ket{W}$ after applying a unitary operator $\hat{U}$:
+\begin{equation*}
+    \bra{\hat{U}V}\ket{\hat{U}W} = \bra{V}\hat{U}^\dagger \hat{U}\ket{W} = \bra{V}\hat{I}\ket{W} = \bra{V}\ket{W}
+\end{equation*}
+
+As a consequence, the individual columns of a unitary operator $\hat{U}$ form an orthonormal set of vectors. This is because the inner product of any two columns of $\hat{U}$ is given by:
+\begin{equation*}
+    \bra{\hat{U}i}\ket{\hat{U}j} = \bra{i}\hat{U}^\dagger \hat{U}\ket{j} = \bra{i}\hat{I}\ket{j} = \delta_{ij}
+\end{equation*}
+
+\end{itemize}
+
+\subsection{Active and Passive Transformations}
+
+Suppose all vectors in a vector space $\vecspace{V}$ is subjected to a unitary transformation $\hat{U}$.
+
+\begin{equation*}
+    \ket{V} \rightarrow \ket{V'} = \hat{U}\ket{V}
+\end{equation*}
+
+Under the transformation $\hat{U}$, the matrix representation of any operator $\hat{\Omega}$ is modified as:
+
+\begin{equation*}
+    \Omega'_{ij} = \bra{i'}\hat{\Omega}\ket{j'} = \bra{\hat{U}i}\hat{\Omega}\ket{\hat{U}j} = \bra{i}\hat{U}^\dagger\hat{\Omega}\hat{U}\ket{j} = (U^\dagger\Omega U)_{ij}
+\end{equation*}
+
+Thus, the change is similar to leaving the vectors alone and changing all operators to:
+
+\begin{equation*}
+    \hat{\Omega} \rightarrow \hat{U}^\dagger\hat{\Omega}\hat{U}
+\end{equation*}
+
+The first case is called an active transformation, while the second case is called a passive transformation.
+
+\subsubsection{Trace of an Operator}
+
+The trace of a matrix is defined as:
+
+\begin{equation*}
+    Tr(\Omega) = \sum_i \Omega_{ii}
+\end{equation*}
+
+Some properties of trace of an operator are:
+
+\begin{itemize}
+    \item $Tr(\Omega\Lambda) = Tr(\Lambda\Omega)$
+    \item $Tr(\Omega\Lambda\Theta) = Tr(\Lambda\Theta\Omega) = Tr(\Theta\Omega\Lambda)$
+    \item $Tr(\Omega) = Tr(U^\dagger\Omega U)$ where $U$ is a unitary matrix.
+\end{itemize}
+
 
 % -------------------------------------------------
 % References
