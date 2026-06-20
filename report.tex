@@ -164,7 +164,7 @@ The inner product is a mathematical operation that takes two vectors and produce
 
 Two vectors $\ket{V}$ and $\ket{W}$ are said to be orthogonal if their inner product is zero, i.e., $\bra{V}\ket{W} = 0$.
 
-Also we define the norm of a vector $\ket{V}$ as $\|V\| = \sqrt{\bra{V}\ket{V}}$. A vector with unit norm is called a unit vector.
+We also define the norm of a vector $\ket{V}$ as $\|V\| = \sqrt{\bra{V}\ket{V}}$. A vector with unit norm is called a unit vector.
 Two important inequalities related to inner product spaces are:
 
 \begin{itemize}
@@ -295,7 +295,7 @@ An operator $\hat{\Omega}$ is an instruction to transform any vector $\ket{V}$ t
 \begin{equation*}
     \hat{\Omega} \ket{V} = \ket{V'}
 \end{equation*}
-Operators can also act on bras in similar way:
+Operators can also act on bras in a similar way:
 \begin{equation*}
     \bra{V} \hat{\Omega} = \bra{V'}
 \end{equation*}
@@ -430,7 +430,7 @@ Some properties of the commutator are:
     \item $[\hat{\Omega}\hat{\Lambda}, \hat{\theta}] = \hat{\Omega}[\hat{\Lambda}, \hat{\theta}] + [\hat{\Omega}, \hat{\theta}]\hat{\Lambda}$.
 \end{itemize}
 
-The inverse of an operator $\hat{\Omega}$, if exists, is denoted as $\hat{\Omega}^{-1}$ and is the operator that satisfies the following conditions:
+The inverse of an operator $\hat{\Omega}$, if it exists, is denoted as $\hat{\Omega}^{-1}$ and is the operator that satisfies the following conditions:
 \begin{equation*}
     \hat{\Omega}^{-1} \hat{\Omega} = \hat{\Omega} \hat{\Omega}^{-1} = \hat{I}
 \end{equation*}
@@ -542,7 +542,7 @@ Consider an operator $\hat{\Omega}$ operating on a ket $\ket{V}$:
 \begin{equation*}
     \hat{\Omega}\ket{V} = \ket{V'}
 \end{equation*}
-Usually the ket $\ket{V'}$ is not restricted to be a multiple of $\ket{V}$, but if such a case happens, ie:
+Usually the ket $\ket{V'}$ is not restricted to be a multiple of $\ket{V}$, but if such a case happens, i.e.:
 \begin{equation*}
     \ket{V'} = \hat{\Omega}\ket{V} = \omega\ket{V}
 \end{equation*}
@@ -582,7 +582,7 @@ Some important facts about eigenvalues and eigenkets are:
 To understand the propagator function, we focus on a problem from mechanics:
 
 \begin{example}
-    Two masses $m$ are coupled to each other and to the walls by a spring of constant $k$. If $x_1$ and $x_2$ are there displacement from their equilibrium position, find $x_1(t)$ and $x_2(t)$, given $x_1(0)$, $x_2(0)$ and $\dot{x_1}(0) = \dot{x_2}(0) = 0$
+    Two masses $m$ are coupled to each other and to the walls by a spring of constant $k$. If $x_1$ and $x_2$ are their displacements from their equilibrium positions, find $x_1(t)$ and $x_2(t)$, given $x_1(0)$, $x_2(0)$ and $\dot{x_1}(0) = \dot{x_2}(0) = 0$
 
     \begin{figure}[h!]
         \centering
@@ -815,13 +815,13 @@ From here, we get the expression of $U(t)$ as:
     &= \sum_{i=\rom{1}}^\rom{2}\ket{i} \bra{i}\cos(\omega_it)
 \end{align*}
 
-This representation lets us appreciate the relevance of the eigenkets of $\Omega$, for see what happens if the initial state was one of the eigenket. Let $\ket{x(0)} = \ket{\rom{1}}$:
+This representation lets us appreciate the relevance of the eigenkets of $\Omega$, to see what happens if the initial state was one of the eigenkets. Let $\ket{x(0)} = \ket{\rom{1}}$:
 \begin{align*}
     \ket{x(t)} &= U(t)\ket{x} \\
     &= \left( \ket{\rom{1}} \bra{\rom{1}}\cos(\omega_\rom{1}t) + \ket{\rom{2}} \bra{\rom{2}}\cos(\omega_\rom{2}t)\right) \ket{\rom{1}} \\
     &= \ket{\rom{1}}\cos(\omega_\rom{1}t)
 \end{align*}
-ie, the state is only affected by an overall factor of $\cos(\omega_\rom{1}t)$. These modes of vibration are called \textbf{normal modes.}
+That is, the state is only affected by an overall factor of $\cos(\omega_\rom{1}t)$. These modes of vibration are called \textbf{normal modes.}
 
 The central problem in Quantum Mechanics is similar to the problem we solved above. The state ket $\ket{\psi}$ in quantum mechanics follow the famous schrodinger's equation:
 \begin{equation*}
@@ -1000,7 +1000,7 @@ where $L = b-a$ to make it extendible to infinite dimensions.
 
 \subsection{Generalisation}
 
-Now let us work backwords to extend these to infinite dimensions. In such a case we will have $n\to \infty$, and the inner product becomes
+Now let us work backwards to extend these to infinite dimensions. In such a case we will have $n\to \infty$, and the inner product becomes
 \begin{equation*}
     \bra{f}\ket{g} = \lim_{n\to\infty}\sum_{i=1}^n f(x_i)^* g(x_i) \frac{L}{n+1} = \int_{a}^{b} f^*(x) g(x) dx
 \end{equation*}
@@ -1836,7 +1836,7 @@ With this we have a way to create a transformation that conserves a specific qua
         y &= C\cos t + D\sin t
     \end{align*}
 
-    using $x=x_0$ and $y=y_0$, $\der{x}{t} = -y_0$, $\der{y}{y} = x_0$ at $t=0$,
+    using $x=x_0$ and $y=y_0$, $\der{x}{t} = -y_0$, $\der{y}{t} = x_0$ at $t=0$,
     \begin{align*}
         \bar{x} &= x\cos t - y\sin t \\
         \bar{y} &= x\sin t + y\cos t \\
