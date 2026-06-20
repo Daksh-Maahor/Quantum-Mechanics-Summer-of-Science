@@ -9,15 +9,34 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{caption}
+\usepackage{subcaption}
 \usepackage{hyperref}
 \usepackage{fancyhdr}
 \usepackage{setspace}
 \usepackage{titlesec}
+\usepackage{romannum}
+\usepackage{tikz}
+\usepackage{pgfplots}
+
+\usetikzlibrary{patterns}
+\usetikzlibrary{decorations.pathmorphing}
+
+\pgfplotsset{compat=1.18}
 
 % -------------------------------------------------
 % Custom Commands
 % -------------------------------------------------
 \newcommand{\vecspace}[1]{\mathbb{#1}}
+\newcommand{\rom}[1]{\Romannum{#1}}
+\newcommand{\der}[2]{\frac{d#1}{d#2}}
+\newcommand{\parder}[2]{\frac{\partial#1}{\partial#2}}
+\newcommand{\nder}[3]{\frac{d^#3#1}{d#2^#3}}
+\newcommand{\nparder}[3]{\frac{\partial^#1#2}{\partial#3^#1}}
+\newcommand{\lagrangian}{\mathcal{L}}
+\newcommand{\hamiltonian}{\mathcal{H}}
+\newcommand{\eulerlagrange}[1]{\der{}{t}\left( \parder{\lagrangian}{\dot{#1}} \right) = \parder{\lagrangian}{#1}}
+\newtheorem{example}{Example}[section]
+\newtheorem*{solution}{Sol}
 
 % -------------------------------------------------
 % Header & Footer
@@ -27,6 +46,8 @@
 \fancyhead[L]{Quantum Mechanics Report}
 \fancyhead[R]{\leftmark}
 \fancyfoot[C]{\thepage}
+
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}} 
 
 \hypersetup{pdfborder=0 0 0}
 
@@ -105,10 +126,12 @@ Indian Institute of Technology Bombay
 \tableofcontents
 \clearpage
 
+\pagenumbering{arabic}
+
 % -------------------------------------------------
 % Chapter 1
 % -------------------------------------------------
-\chapter{Mathematical Foundation}
+\chapter{Mathematical Foundations}
 
 \section{Introduction to Linear Vector Spaces}
 
@@ -131,7 +154,7 @@ and the following features:
 
 \subsection{Inner Product Spaces}
 
-The inner product is a mathematical operation that takes two vectors and produces a scalar. It is denoted as $\bra{V}\ket{W}$ and had the following properties:
+The inner product is a mathematical operation that takes two vectors and produces a scalar. It is denoted as $\bra{V}\ket{W}$ and has the following properties:
 \begin{itemize}
     \item Conjugate symmetry: $\bra{V}\ket{W} = \bra{W}\ket{V}^*$.
     \item Linearity in the second argument: $\bra{V}\ket{aW + bX} = a\bra{V}\ket{W} + b\bra{V}\ket{X}$.
@@ -174,8 +197,7 @@ The component of a vector $\ket{V}$ in the direction of a basis vector $\ket{j}$
     v_j = \bra{j}\ket{V}
 \end{equation*}
 
-Thus, in any basis, we can express a vector $\ket{V}$ as:
-
+Therefore, in any orthonormal basis, a vector $\ket{V}$ can be expressed as:
 \begin{equation*}
     \ket{V} = \sum_{j} \ket{j}\bra{j}\ket{V}
 \end{equation*}
@@ -191,12 +213,11 @@ Consider two vectors $\ket{V}$ and $\ket{W}$ expanded in a basis as:
 \end{equation*}
 
 The inner product can be expanded as:
-
 \begin{equation*}
-    \bra{V}\ket{W} = \left( \sum_{i} v_i^* \bra{i} \right) \left( \sum_{j} w_j \ket{j} \right) = \sum_{i,j} v_i^* w_j \bra{i}\ket{j}
+    \bra{V}\ket{W} = \left( \sum_{i} v_i^* \bra{i} \right) \left( \sum_{j} w_j \ket{j} \right) = \sum_{i,j} v_i^* w_j \bra{i}\ket{j}.
 \end{equation*}
 
-Now if the basis was orthonormal, then $\bra{i}\ket{j} = \delta_{ij}$, and the inner product simplifies to:
+If the basis is orthonormal, then $\bra{i}\ket{j} = \delta_{ij}$, and the inner product simplifies to:
 
 \begin{equation*}
     \bra{V}\ket{W} = \sum_{i} v_i^* w_i
@@ -240,6 +261,7 @@ The adjoint of a vector $\ket{V}$, denoted as $\bra{V}$, is the conjugate transp
 \end{equation*}
 
 With that representation, the inner product of two n-dimensional vectors $\ket{V}$ and $\ket{W}$ can be calculated as:
+
 \begin{equation*}
     \bra{V}\ket{W} = \begin{bmatrix}
         v_1^* & v_2^* & v_3^* & \ldots & v_n^*
@@ -277,11 +299,14 @@ Operators can also act on bras in similar way:
 \begin{equation*}
     \bra{V} \hat{\Omega} = \bra{V'}
 \end{equation*}
-An operator is called a linear operator if it satisfies the following properties:
+An operator is called a linear operator if it satisfies the following property:
 \begin{itemize}
-    \item Linearity in kets: $\hat{\Omega}(a\ket{V} + b\ket{W}) = a\hat{\Omega}\ket{V} + b\hat{\Omega}\ket{W}$, where $a$ and $b$ are scalars.
-    \item Linearity in bras: $(\bra{V}a + \bra{W}b) \hat{\Omega} = \bra{V}\hat{\Omega} a + \bra{W} \hat{\Omega} b$, where $a$ and $b$ are scalars.
+    \item Linearity: for any scalars $a$ and $b$ and for any vectors $\ket{V}$ and $\ket{W}$,
+    \begin{equation*}
+        \hat{\Omega}(a\ket{V} + b\ket{W}) = a\hat{\Omega}\ket{V} + b\hat{\Omega}\ket{W}.
+    \end{equation*}
 \end{itemize}
+When $\hat{\Omega}$ acts on bras, it is compatible with the dual vector structure of the inner product.
 
 \subsection{Some useful Linear Operators}
 
@@ -297,15 +322,13 @@ The Identity operator $\hat{I}$ is the operator which maps every vector to itsel
 
 \item Rotation Operator
 
-The operator $\hat{R}(\frac{\pi}{2}i)$ is the operator which rotates every vector by $\frac{\pi}{2}$ radians about the $i$-th axis. For example, in a 3-dimensional vector space, the operator $\hat{R}(\frac{\pi}{2}z)$ rotates every vector by $\frac{\pi}{2}$ radians about the $z$-axis.
-Its effect on the basis vectors is given by:
+In a three-dimensional vector space with an orthonormal basis, a rotation operator is a linear operator that preserves lengths and angles. For example, a rotation by $\frac{\pi}{2}$ about the $z$-axis acts on the basis vectors as:
 \begin{align*}
-    \hat{R}(\frac{\pi}{2}z) \ket{1} = \ket{2} \\
-    \hat{R}(\frac{\pi}{2}z) \ket{2} = -\ket{1} \\
-    \hat{R}(\frac{\pi}{2}z) \ket{3} = \ket{3}
+    \hat{R}\left(\frac{\pi}{2}, \hat{z}\right) \ket{1} &= \ket{2}, \\
+    \hat{R}\left(\frac{\pi}{2}, \hat{z}\right) \ket{2} &= -\ket{1}, \\
+    \hat{R}\left(\frac{\pi}{2}, \hat{z}\right) \ket{3} &= \ket{3}.
 \end{align*}
-
-More generally, the operator $\hat{R}(\vec{\theta})$ represents a rotation by an angle $|\vec{\theta}|$ about the axis defined by the vector $\hat{\theta} = \frac{\vec{\theta}}{|\vec{\theta}|}$.
+More generally, $\hat{R}(\vec{\theta})$ denotes a rotation by angle $|\vec{\theta}|$ about the axis defined by $\hat{\theta} = \frac{\vec{\theta}}{|\vec{\theta}|}$.
 
 \item Projection Operator
 
@@ -399,12 +422,12 @@ The order of operations is important. In general, $\hat{\Lambda}\hat{\Omega} \ne
 Some properties of the commutator are:
 \begin{itemize}
     \item $[\hat{\Omega}, \hat{\Lambda}] = -[\hat{\Lambda}, \hat{\Omega}]$.
-    \item $[\hat{\Omega}, \hat{\Lambda} + \hat{\Theta}] = [\hat{\Omega}, \hat{\Lambda}] + [\hat{\Omega}, \hat{\Theta}]$.
-    \item $[\hat{\Omega} + \hat{\Theta}, \hat{\Lambda}] = [\hat{\Omega}, \hat{\Lambda}] + [\hat{\Theta}, \hat{\Lambda}]$.
+    \item $[\hat{\Omega}, \hat{\Lambda} + \hat{\theta}] = [\hat{\Omega}, \hat{\Lambda}] + [\hat{\Omega}, \hat{\theta}]$.
+    \item $[\hat{\Omega} + \hat{\theta}, \hat{\Lambda}] = [\hat{\Omega}, \hat{\Lambda}] + [\hat{\theta}, \hat{\Lambda}]$.
     \item $[\hat{\Omega}, c\hat{\Lambda}] = c[\hat{\Omega}, \hat{\Lambda}]$, where $c$ is a scalar.
     \item $[c\hat{\Omega}, \hat{\Lambda}] = c[\hat{\Omega}, \hat{\Lambda}]$, where $c$ is a scalar.
-    \item $[\hat{\Omega}, \hat{\Lambda}\hat{\Theta}] = [\hat{\Omega}, \hat{\Lambda}]\hat{\Theta} + \hat{\Lambda}[\hat{\Omega}, \hat{\Theta}]$.
-    \item $[\hat{\Omega}\hat{\Lambda}, \hat{\Theta}] = \hat{\Omega}[\hat{\Lambda}, \hat{\Theta}] + [\hat{\Omega}, \hat{\Theta}]\hat{\Lambda}$.
+    \item $[\hat{\Omega}, \hat{\Lambda}\hat{\theta}] = [\hat{\Omega}, \hat{\Lambda}]\hat{\theta} + \hat{\Lambda}[\hat{\Omega}, \hat{\theta}]$.
+    \item $[\hat{\Omega}\hat{\Lambda}, \hat{\theta}] = \hat{\Omega}[\hat{\Lambda}, \hat{\theta}] + [\hat{\Omega}, \hat{\theta}]\hat{\Lambda}$.
 \end{itemize}
 
 The inverse of an operator $\hat{\Omega}$, if exists, is denoted as $\hat{\Omega}^{-1}$ and is the operator that satisfies the following conditions:
@@ -412,7 +435,7 @@ The inverse of an operator $\hat{\Omega}$, if exists, is denoted as $\hat{\Omega
     \hat{\Omega}^{-1} \hat{\Omega} = \hat{\Omega} \hat{\Omega}^{-1} = \hat{I}
 \end{equation*}
 \begin{equation*}
-    \hat{(\Omega\Lambda)}^{-1} = \hat{\Lambda}^{-1} \hat{\Omega}^{-1}
+    (\hat{\Omega}\hat{\Lambda})^{-1} = \hat{\Lambda}^{-1} \hat{\Omega}^{-1}
 \end{equation*}
 
 \subsection{Adjoint of an Operator}
@@ -477,7 +500,7 @@ As a consequence, the individual columns of a unitary operator $\hat{U}$ form an
 
 \subsection{Active and Passive Transformations}
 
-Suppose all vectors in a vector space $\vecspace{V}$ is subjected to a unitary transformation $\hat{U}$.
+Suppose all vectors in a vector space $\vecspace{V}$ are subjected to a unitary transformation $\hat{U}$.
 
 \begin{equation*}
     \ket{V} \rightarrow \ket{V'} = \hat{U}\ket{V}
@@ -509,10 +532,1374 @@ Some properties of trace of an operator are:
 
 \begin{itemize}
     \item $Tr(\Omega\Lambda) = Tr(\Lambda\Omega)$
-    \item $Tr(\Omega\Lambda\Theta) = Tr(\Lambda\Theta\Omega) = Tr(\Theta\Omega\Lambda)$
+    \item $Tr(\Omega\Lambda\theta) = Tr(\Lambda\theta\Omega) = Tr(\theta\Omega\Lambda)$
     \item $Tr(\Omega) = Tr(U^\dagger\Omega U)$ where $U$ is a unitary matrix.
 \end{itemize}
 
+\subsection{Eigenvalues and Eigenkets}
+
+Consider an operator $\hat{\Omega}$ operating on a ket $\ket{V}$:
+\begin{equation*}
+    \hat{\Omega}\ket{V} = \ket{V'}
+\end{equation*}
+Usually the ket $\ket{V'}$ is not restricted to be a multiple of $\ket{V}$, but if such a case happens, ie:
+\begin{equation*}
+    \ket{V'} = \hat{\Omega}\ket{V} = \omega\ket{V}
+\end{equation*}
+
+Then the value $\omega$ is called an eigenvalue of the operator $\hat{\Omega}$, and the ket $\ket{V}$ is called its corresponding eigenket.
+
+Now consider the equation:
+\begin{equation*}
+    \hat{\Omega}\ket{V} = \omega\ket{V}
+\end{equation*}
+\begin{equation*}
+    \hat{\Omega}\ket{V} = \omega\hat{I}\ket{V}
+\end{equation*}
+\begin{equation*}
+    (\hat{\Omega}-\omega\hat{I})\ket{V} = \ket{0}
+\end{equation*}
+\begin{equation*}
+    \ket{V} = (\hat{\Omega}-\omega\hat{I})^{-1}\ket{0}
+\end{equation*}
+
+The last equation is not possible, which means that the inverse $(\hat{\Omega}-\omega\hat{I})^{-1}$ must not exist, ie,
+\begin{equation*}
+    \|\hat{\Omega}-\omega\hat{I}\| = 0
+\end{equation*}
+
+Solving the above equation reveals the eigenvalues of the operator $\hat{\Omega}$, using which we can get the eigenkets as well.
+
+Some important facts about eigenvalues and eigenkets are:
+\begin{itemize}
+    \item The eigenvalues of a Hermitian operator are all real, and the corresponding eigenkets are orthonormal forming a basis. In that basis, the matrix representing the operator is diagonal, with the eigenvalues as its diagonal entries.
+    \item Assuming no degeneracy, the eigenvalues of a unitary operator are all of unit modulus, and the eigenvectors are mutually orthogonal.
+    \item If $\Omega$ is a hermitian matrix, there exists a unitary matrix $U$, built of the eigenvectors of $\Omega$, such that $U^\dagger\Omega U$ is diagonal.
+\end{itemize}
+
+\subsection{Propagator Function}
+
+To understand the propagator function, we focus on a problem from mechanics:
+
+\begin{example}
+    Two masses $m$ are coupled to each other and to the walls by a spring of constant $k$. If $x_1$ and $x_2$ are there displacement from their equilibrium position, find $x_1(t)$ and $x_2(t)$, given $x_1(0)$, $x_2(0)$ and $\dot{x_1}(0) = \dot{x_2}(0) = 0$
+
+    \begin{figure}[h!]
+        \centering
+        \begin{tikzpicture}
+            % Wall/Support
+            \draw [pattern=north east lines, thick] (0,0) rectangle (-0.5,2);
+            \draw [thick] (0,0) -- (0,2);
+
+            \draw [pattern=north east lines, thick] (9,0) rectangle (9.5,2);
+            \draw [thick] (9,0) -- (9,2);
+            
+            % Spring
+            \draw [decoration={coil,aspect=0.5,segment length=2.5mm,amplitude=4mm},decorate, thick] (0,1) -- (2,1);
+            \draw [decoration={coil,aspect=0.5,segment length=2.5mm,amplitude=4mm},decorate, thick] (3.5,1) -- (5.5,1);
+            \draw [decoration={coil,aspect=0.5,segment length=2.5mm,amplitude=4mm},decorate, thick] (7,1) -- (9,1);
+            
+            % Mass block
+            \draw [fill=lightgray, thick] (2,0) rectangle (3.5,2);
+            \node at (2.75,1) {$m$};
+
+            \draw [fill=lightgray, thick] (5.5,0) rectangle (7,2);
+            \node at (6.25,1) {$m$};
+            
+            % Floor
+            \draw [thick] (-0.5,0) -- (9.5,0);
+            
+            % Dimension/Vector label
+            \draw [thick] (2.75, -0.5) -- (2.75, -0.25);
+            \draw [->, thick] (2.75, -0.5) -- (3.75, -0.5);
+            \node at (3.25, -1) {$x_1$};
+            \draw [thick] (6.25, -0.5) -- (6.25, -0.25);
+            \draw [->, thick] (6.25, -0.5) -- (7.25, -0.5);
+            \node at (6.75, -1) {$x_2$};
+        \end{tikzpicture}
+    \end{figure}
+\end{example}
+
+\begin{solution}
+    The variables in the coupled mass problem follow the following equations:
+    \begin{align*}
+        \ddot{x_1} &= -\frac{2k}{m}x_1 + \frac{k}{m}x_2 \\
+        \ddot{x_2} &= \frac{k}{m}x_1 - \frac{2k}{m}x_2
+    \end{align*}
+
+    In matrix notation,
+    \begin{equation*}
+        \begin{bmatrix}
+            \ddot{x_1} \\
+            \ddot{x_2}
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+            -\frac{2k}{m} & \frac{k}{m} \\
+            \frac{k}{m} & -\frac{2k}{m}
+        \end{bmatrix}
+        \begin{bmatrix}
+            x_1 \\
+            x_2
+        \end{bmatrix}
+    \end{equation*}
+
+    Now define,
+    \begin{equation*}
+        \ket{\ddot{x}(t)} = \begin{bmatrix}
+            \ddot{x_1} \\
+            \ddot{x_2}
+        \end{bmatrix}
+        \qquad
+        \qquad
+        \ket{x(t)} = \begin{bmatrix}
+            x_1 \\
+            x_2
+        \end{bmatrix}
+        \qquad
+        \qquad
+        \Omega = \begin{bmatrix}
+            -\frac{2k}{m} & \frac{k}{m} \\
+            \frac{k}{m} & -\frac{2k}{m}
+        \end{bmatrix}
+    \end{equation*}
+
+    Thus, we have
+
+    \begin{equation*}
+        \ket{\ddot{x}(t)} = \hat{\Omega}\ket{x(t)}
+    \end{equation*}
+
+    To solve the above equation we first transform into the eigenbasis of $\Omega$. Let the eigenkets of $\Omega$ be $\ket{\rom{1}}$ and $\ket{\rom{2}}$, so that:
+    \begin{equation*}
+        \hat{\Omega}\ket{\rom{1}} = -\omega_{\rom{1}}^2 \ket{\rom{1}}
+    \end{equation*}
+    \begin{equation*}
+        \hat{\Omega}\ket{\rom{2}} = -\omega_{\rom{2}}^2 \ket{\rom{2}}
+    \end{equation*}
+    where we take $\lambda_1 = -\omega_{\rom{1}}^2$ and $\lambda_2 = -\omega_{\rom{2}}^2$ as the eigenvalues for simplicity.
+
+    Solving the eigenvalue problem for $\Omega$, we get:
+    \begin{equation*}
+        \lambda_1 = -\frac{k}{m} = -\omega_{\rom{1}}^2 \qquad\qquad\qquad 
+        \lambda_2 = -\frac{3k}{m} = -\omega_{\rom{2}}^2
+    \end{equation*}
+    \begin{equation*}
+        \ket{\rom{1}} = \ket{\lambda = -\frac{k}{m}} = \frac{1}{\sqrt{2}} \begin{bmatrix}
+            1 \\
+            1
+        \end{bmatrix}
+        \qquad\qquad\qquad
+        \ket{\rom{2}} = \ket{\lambda = -\frac{3k}{m}} = \frac{1}{\sqrt{2}} \begin{bmatrix}
+            1 \\
+            -1
+        \end{bmatrix}
+    \end{equation*}
+
+    \begin{equation*}
+        \ket{x(t)} = x_\rom{1}\ket{\rom{1}} + x_\rom{2}\ket{\rom{2}}
+    \end{equation*}
+
+    In the eigenbasis of $\Omega$, it is diagonal. Hence, the equation can be written in matrix form as:
+
+    \begin{equation*}
+        \begin{bmatrix}
+            \ddot{x_\rom{1}} \\
+            \ddot{x_\rom{2}}
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+            -\omega_\rom{1}^2 & 0 \\
+            0 & -\omega_\rom{2}^2
+        \end{bmatrix}
+        \begin{bmatrix}
+            x_\rom{1} \\
+            x_\rom{2}
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+            -\omega_\rom{1}^2x_\rom{1} \\
+            -\omega_\rom{2}^2x_\rom{2}
+        \end{bmatrix}
+    \end{equation*}
+    and thus,
+    \begin{equation*}
+        \ddot{x}_\rom{1}(t) = -\omega_\rom{1}^2x_\rom{1} \qquad\qquad \ddot{x}_\rom{2}(t) = -\omega_\rom{2}^2x_\rom{2}
+    \end{equation*}
+    \begin{equation*}
+        x_\rom{1}(t) = x_\rom{1}(0)\cos(\omega_\rom{1}t) \qquad\qquad x_\rom{2}(t) = x_\rom{2}(0)\cos(\omega_\rom{2}t)
+    \end{equation*}
+    to give
+    \begin{align*}
+        \ket{x(t)} &= x_\rom{1}(t) \ket{\rom{1}} + x_\rom{2}(t) \ket{\rom{2}} \\
+        &= x_\rom{1}(0)\cos(\omega_\rom{1}t) \ket{\rom{1}} + x_\rom{2}(0)\cos(\omega_\rom{2}t) \ket{\rom{2}}
+    \end{align*}
+
+    Now using the expressions:
+    \begin{equation*}
+        x_\rom{1}(0) = \bra{\rom{1}}\ket{x(0)} = \frac{1}{\sqrt{2}}\begin{bmatrix}
+            1 & 1
+        \end{bmatrix}\begin{bmatrix}
+            x_1(0) \\ x_2(0)
+        \end{bmatrix} = \frac{1}{\sqrt{2}}(x_1(0) + x_2(0))
+    \end{equation*}
+    \begin{equation*}
+        x_\rom{2}(0) = \bra{\rom{2}}\ket{x(0)} = \frac{1}{\sqrt{2}}\begin{bmatrix}
+            1 & -1
+        \end{bmatrix}\begin{bmatrix}
+            x_1(0) \\ x_2(0)
+        \end{bmatrix} = \frac{1}{\sqrt{2}}(x_1(0) - x_2(0))
+    \end{equation*}
+    We have,
+    \begin{equation*}
+        \ket{x(t)} = x_\rom{1}(0)\cos(\omega_\rom{1}t) \ket{\rom{1}} + x_\rom{2}(0)\cos(\omega_\rom{2}t) \ket{\rom{2}}
+    \end{equation*}
+    \begin{equation*}
+        \begin{bmatrix}
+            x_1 \\
+            x_2
+        \end{bmatrix} = \frac{1}{2}(x_1(0) + x_2(0))\cos(\sqrt{\frac{k}{m}}t)\begin{bmatrix}
+            1 \\
+            1
+        \end{bmatrix} + \frac{1}{2}(x_1(0) - x_2(0))\cos(\sqrt{\frac{3k}{m}}t) \begin{bmatrix}
+            1 \\
+            -1
+        \end{bmatrix}
+    \end{equation*}
+    \begin{equation*}
+        \begin{bmatrix}
+            x_1 \\
+            x_2
+        \end{bmatrix} = \begin{bmatrix}
+            \frac{1}{2}\left(\cos(\sqrt{\frac{k}{m}}t) + \cos(\sqrt{\frac{3k}{m}}t)\right)x_1(0) + \frac{1}{2}\left(\cos(\sqrt{\frac{k}{m}}t) - \cos(\sqrt{\frac{3k}{m}}t)\right)x_2(0) \\
+            \frac{1}{2}\left(\cos(\sqrt{\frac{k}{m}}t) - \cos(\sqrt{\frac{3k}{m}}t)\right)x_1(0) + \frac{1}{2}\left(\cos(\sqrt{\frac{k}{m}}t) + \cos(\sqrt{\frac{3k}{m}}t)\right)x_2(0) \\
+        \end{bmatrix}
+    \end{equation*}
+    Or,
+    \begin{equation*}
+        \begin{bmatrix}
+            x_1 \\
+            x_2
+        \end{bmatrix} = \begin{bmatrix}
+            \frac{1}{2}\left(\cos(\sqrt{\frac{k}{m}}t) + \cos(\sqrt{\frac{3k}{m}}t)\right) & \frac{1}{2}\left(\cos(\sqrt{\frac{k}{m}}t) - \cos(\sqrt{\frac{3k}{m}}t)\right) \\
+            \frac{1}{2}\left(\cos(\sqrt{\frac{k}{m}}t) - \cos(\sqrt{\frac{3k}{m}}t)\right) & \frac{1}{2}\left(\cos(\sqrt{\frac{k}{m}}t) + \cos(\sqrt{\frac{3k}{m}}t)\right) \\
+        \end{bmatrix}
+        \begin{bmatrix}
+            x_1(0) \\ x_2(0)
+        \end{bmatrix}
+    \end{equation*}
+    \begin{equation*}
+        \ket{x} = \hat{U}(t)\ket{x(0)}
+    \end{equation*}
+    where,
+    \begin{equation*}
+        U(t) = \begin{bmatrix}
+            \frac{1}{2}\left(\cos(\sqrt{\frac{k}{m}}t) + \cos(\sqrt{\frac{3k}{m}}t)\right) & \frac{1}{2}\left(\cos(\sqrt{\frac{k}{m}}t) - \cos(\sqrt{\frac{3k}{m}}t)\right) \\
+            \frac{1}{2}\left(\cos(\sqrt{\frac{k}{m}}t) - \cos(\sqrt{\frac{3k}{m}}t)\right) & \frac{1}{2}\left(\cos(\sqrt{\frac{k}{m}}t) + \cos(\sqrt{\frac{3k}{m}}t)\right) \\
+        \end{bmatrix}
+    \end{equation*}
+\end{solution}
+
+Here, we see that the final state vector is obtained by multiplying the initial state vector by a matrix. This matrix is called the \textbf{propagator function}; finding the solution is equivalent to finding this propagator matrix, as we can apply this matrix to any initial condition to see how the state "propagates".
+
+Now, using the equation:
+\begin{align*}
+    \ket{x(t)} &= x_\rom{1}(t) \ket{\rom{1}} + x_\rom{2}(t) \ket{\rom{2}} \\
+        &= x_\rom{1}(0)\cos(\omega_\rom{1}t) \ket{\rom{1}} + x_\rom{2}(0)\cos(\omega_\rom{2}t) \ket{\rom{2}} \\
+        &= \ket{\rom{1}} \bra{\rom{1}}\ket{x(0)}\cos(\omega_\rom{1}t) + \ket{\rom{2}} \bra{\rom{2}}\ket{x(0)}\cos(\omega_\rom{2}t) \\
+        &= \left(\ket{\rom{1}} \bra{\rom{1}}\cos(\omega_\rom{1}t) + \ket{\rom{2}} \bra{\rom{2}}\cos(\omega_\rom{2}t)\right) \ket{x(0)}
+\end{align*}
+From here, we get the expression of $U(t)$ as:
+\begin{align*}
+    U(t) &= \ket{\rom{1}} \bra{\rom{1}}\cos(\omega_\rom{1}t) + \ket{\rom{2}} \bra{\rom{2}}\cos(\omega_\rom{2}t) \\
+    &= \sum_{i=\rom{1}}^\rom{2}\ket{i} \bra{i}\cos(\omega_it)
+\end{align*}
+
+This representation lets us appreciate the relevance of the eigenkets of $\Omega$, for see what happens if the initial state was one of the eigenket. Let $\ket{x(0)} = \ket{\rom{1}}$:
+\begin{align*}
+    \ket{x(t)} &= U(t)\ket{x} \\
+    &= \left( \ket{\rom{1}} \bra{\rom{1}}\cos(\omega_\rom{1}t) + \ket{\rom{2}} \bra{\rom{2}}\cos(\omega_\rom{2}t)\right) \ket{\rom{1}} \\
+    &= \ket{\rom{1}}\cos(\omega_\rom{1}t)
+\end{align*}
+ie, the state is only affected by an overall factor of $\cos(\omega_\rom{1}t)$. These modes of vibration are called \textbf{normal modes.}
+
+The central problem in Quantum Mechanics is similar to the problem we solved above. The state ket $\ket{\psi}$ in quantum mechanics follow the famous schrodinger's equation:
+\begin{equation*}
+    \hat{H} \ket{\psi} = i\hbar\dot{\ket{\psi}}
+\end{equation*}
+
+\subsection{Functions of Operators}
+
+Functions of operators are defined similar to functions of numbers. Let us take for example:
+\begin{equation*}
+    e^\Omega = \sum_{k=0}^\infty \frac{\Omega^k}{k!}
+\end{equation*}
+If we restrict ourselves to just hermitian operators, then we can write $\Omega$ in its eigenbasis as:
+\begin{equation*}
+    \Omega = \begin{bmatrix}
+        \omega_1 & 0 & \cdots & 0 \\
+        0 & \omega_2 & \cdots & 0 \\
+        \vdots & \vdots & \ddots & \vdots \\
+        0 & 0 & \cdots & \omega_n
+    \end{bmatrix}
+\end{equation*}
+\begin{equation*}
+    \Omega^m = \begin{bmatrix}
+        \omega_1^m & 0 & \cdots & 0 \\
+        0 & \omega_2^m & \cdots & 0 \\
+        \vdots & \vdots & \ddots & \vdots \\
+        0 & 0 & \cdots & \omega_n^m
+    \end{bmatrix}
+\end{equation*}
+and thus,
+\begin{equation*}
+    e^\Omega = \begin{bmatrix}
+        \sum_{k=0}^\infty \frac{\omega_1^k}{k!} & 0 & \cdots & 0 \\
+        0 & \sum_{k=0}^\infty \frac{\omega_2^k}{k!} & \cdots & 0 \\
+        \vdots & \vdots & \ddots & \vdots \\
+        0 & 0 & \cdots & \sum_{k=0}^\infty \frac{\omega_n^k}{k!}
+    \end{bmatrix} = \begin{bmatrix}
+        e^{\omega_1} & 0 & \cdots & 0 \\
+        0 & e^{\omega_2} & \cdots & 0 \\
+        \vdots & \vdots & \ddots & \vdots \\
+        0 & 0 & \cdots & e^{\omega_n}
+    \end{bmatrix}
+\end{equation*}
+
+If $H$ is hermitian, then $U = e^{iH}$ is unitary. Also, $\det U = e^{iTr(H)}$
+
+\subsubsection{Derivatives of functions of Operators}
+
+Consider an operator:
+\begin{equation*}
+    \hat{\theta}(\lambda) = e^{\lambda\hat{\Omega}} = \sum_{k=0}^\infty\frac{\lambda^k\Omega^k}{k!}
+\end{equation*}
+then,
+\begin{equation*}
+    \der{\theta(\lambda)}{\lambda} = \der{}{\lambda}\sum_{k=0}^\infty\frac{\lambda^k\Omega^k}{k!} = \sum_{k=0}^\infty\frac{k\lambda^{k-1}\Omega^k}{k!} = \Omega\sum_{k=1}^\infty\frac{\lambda^{k-1}\Omega^{k-1}}{(k-1)!} = \Omega\sum_{k=0}^\infty\frac{\lambda^{k}\Omega^k}{k!} = \Omega e^{\lambda\Omega}
+\end{equation*}
+
+If more than one matrix is involved, then order of operations becomes important,
+\begin{equation*}
+    e^{\alpha\Omega}e^{\beta\Omega} = e^{(\alpha + \beta)\Omega}
+\end{equation*}
+is true, but
+\begin{equation*}
+    e^{\alpha\Omega}e^{\beta\theta} = e^{\alpha\Omega + \beta\theta}
+\end{equation*}
+\begin{equation*}
+    e^{\alpha\Omega}e^{\beta\theta}e^{-\alpha\Omega} = e^{\beta\theta}
+\end{equation*}
+etc are not true unless $[\Omega, \theta] = 0$. Likewise, the product rule of differentiation becomes
+\begin{equation*}
+    \der{}{\lambda} e^{\lambda\Omega}e^{\lambda\theta} = \Omega e^{\lambda\Omega}e^{\lambda\theta} + e^{\lambda\Omega}e^{\lambda\theta} \theta 
+\end{equation*}
+
+\section{Generalisation to Infinite Dimensions}
+
+\subsection{A Finite case}
+Consider a function defined in the interval, say $a \leq x \leq b$. One way to model this function is to specify the values of $f(x)$ at $n$ points in the interval $[a, b]$. Let that function be $f_n(x)$.
+
+\begin{figure}[H]
+    \centering
+    \subcaptionbox{The function $f(x)$}[0.48\textwidth]{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                axis lines=middle,
+                xmin=0,xmax=6,
+                ymin=0,ymax=4.2,
+                xtick=\empty,
+                ytick=\empty,
+                xlabel={$x$},
+                ylabel={$f(x)$},
+                clip=false,
+                width=\linewidth
+            ]
+
+            \addplot[
+                thick,
+                samples=400,
+                domain=1:5
+            ]
+            {-0.4*(x^2-6*x+5)+1};
+
+            \addplot[only marks,mark=*]
+            coordinates {(1,1) (5,1)};
+
+            \draw[dashed] (axis cs:1,0)--(axis cs:1,1);
+            \draw[dashed] (axis cs:5,0)--(axis cs:5,1);
+
+            \node[below] at (axis cs:1,0) {$a$};
+            \node[below] at (axis cs:5,0) {$b$};
+
+            \end{axis}
+        \end{tikzpicture}
+    }
+    \hfill
+    \subcaptionbox{Discretization of $f(x)$ as $\ket{f_n}$}[0.48\textwidth]{%
+        \begin{tikzpicture}
+            \begin{axis}[
+                axis lines=middle,
+                xmin=0,xmax=6,
+                ymin=0,ymax=4.2,
+                xtick=\empty,
+                ytick=\empty,
+                xlabel={$x$},
+                ylabel={$f_n(x)$},
+                clip=false,
+                width=\linewidth
+            ]
+
+            \addplot[only marks,mark=*]
+            coordinates {(1,1) (5,1) (1.5, 1.7) (2, 2.2) (2.5, 2.5) (3, 2.6) (3.5, 2.5) (4, 2.2) (4.5, 1.7)};
+
+            \draw[dashed] (axis cs:1,0)--(axis cs:1,1);
+            \draw[dashed] (axis cs:5,0)--(axis cs:5,1);
+
+            \draw[dashed] (axis cs:1.5,0)--(axis cs:1.5,1.7);
+            \draw[dashed] (axis cs:2,0)--(axis cs:2,2.2);
+            \draw[dashed] (axis cs:2.5,0)--(axis cs:2.5,2.5);
+            \draw[dashed] (axis cs:4.5,0)--(axis cs:4.5,1.7);
+
+            \node[below] at (axis cs:1,0) {$a$};
+            \node[below] at (axis cs:5,0) {$b$};
+
+            \node[below] at (axis cs:1.5,0) {$x_1$};
+            \node[below] at (axis cs:2,0) {$x_2$};
+            \node[below] at (axis cs:2.5,0) {$x_3$};
+            \node[below] at (axis cs:4.5,0) {$x_{n-1}$};
+
+            \end{axis}
+        \end{tikzpicture}
+    }
+\end{figure}
+
+Now we can denote the $n$-tuple $\{f_n(x_1), f_n(x_2), \cdots, f_n(x_n)\}$ as the components of the ket $\ket{f_n}$ in a vector space $\vecspace{V}^n$.
+The basis vectors in that vector space then will be:
+\begin{equation*}
+    \ket{x_i} = \begin{bmatrix}
+        0 \\ \vdots \\ 1 \\ \vdots \\ 0
+    \end{bmatrix} \rightarrow i^{th} \text{ index}
+\end{equation*}
+corresponding to a discrete function which is equal to unity at $x = x_i$ and zero elsewhere. These basis vectors satisfy:
+\begin{equation*}
+    \bra{x_i}\ket{x_j} = \delta_{ij}
+\end{equation*}
+\begin{equation*}
+    \sum_{i=1}^n \ket{x_i}\bra{x_i} = \hat{I}
+\end{equation*}
+The function $f_n(x)$ is represented by a ket $\ket{f_n}$ whose projection along $\ket{x_i}$ is $f_n(x_i)$:
+\begin{equation*}
+    \ket{f_n} = \sum_{i=1}^n f_n(x_i)\ket{x_i}
+\end{equation*}
+In this case, we redefine the inner product as:
+\begin{equation*}
+    \bra{f_n}\ket{g_n} = \sum_{i=1}^n f_n(x_i)^* g_n(x_i) \frac{L}{n+1}
+\end{equation*}
+where $L = b-a$ to make it extendible to infinite dimensions.
+
+\subsection{Generalisation}
+
+Now let us work backwords to extend these to infinite dimensions. In such a case we will have $n\to \infty$, and the inner product becomes
+\begin{equation*}
+    \bra{f}\ket{g} = \lim_{n\to\infty}\sum_{i=1}^n f(x_i)^* g(x_i) \frac{L}{n+1} = \int_{a}^{b} f^*(x) g(x) dx
+\end{equation*}
+Each point $x$ gets its basis vector $\ket{x}$. The orthogonality condition requires that
+\begin{equation*}
+    \bra{x}\ket{x'} = 0 \qquad x\neq x'
+\end{equation*}
+Starting with the generalisation of the completeness relation:
+\begin{equation*}
+    \int_{a}^b \ket{x'}\bra{x'}dx' = I
+\end{equation*}
+dotting both sides by $\ket{f}$ on the right and $\bra{x}$ on the left, we get
+\begin{equation*}
+    \int_{a}^b \bra{x}\ket{x'}\bra{x'}\ket{f}dx' = \bra{x}I\ket{f}
+\end{equation*}
+Now, $\bra{x}I\ket{f} = \bra{x}\ket{f} = f(x)$ and $\bra{x'}\ket{f} = f(x')$, thus
+\begin{equation*}
+    \int_{a}^b \bra{x}\ket{x'}f(x')dx' = f(x)
+\end{equation*}
+We now define a new function $\delta(x, x') = \bra{x}\ket{x'}$. Since $\delta(x, x') = 0$ when $x \neq x'$, we can restrict ourselves to an infinitesimal domain around $x'=x$, where $f(x') \sim f(x)$
+\begin{equation*}
+    \int_{a}^b \delta(x, x')f(x')dx' = f(x) \int_{x-\varepsilon}^{x+\varepsilon}\delta(x, x') dx' = f(x)
+\end{equation*}
+\begin{equation*}
+    \int_{x-\varepsilon}^{x+\varepsilon}\delta(x, x') dx' = 1
+\end{equation*}
+
+Since $\delta(x, x')$ depends only on the difference $x-x'$, we can redefine the function $\delta(x-x')$ as:
+\begin{equation*}
+    \delta(x-x') = 0 \qquad x\neq x'
+\end{equation*}
+\begin{equation*}
+    \int_a^b \delta(x-x') dx' = 1 \qquad a < x < b
+\end{equation*}
+This function is called the \textbf{Dirac Delta Function.} Thus, we get
+\begin{equation*}
+    \bra{x}\ket{x'} = \delta(x-x')
+\end{equation*}
+
+\subsection{Properties of Dirac Delta Function}
+
+The Dirac Delta Function is also called the sampling function, as it samples the values of $f(x')$ at a single point
+\begin{equation*}
+    \int \delta(x-x') f(x') dx' = f(x)
+\end{equation*}
+
+Note that
+\begin{equation*}
+    \delta(x-x') = \bra{x}\ket{x'} = \bra{x'}\ket{x}^* = \delta(x'-x)^* = \delta(x'-x)
+\end{equation*}
+thus, it is an even function. It can be modelled as a limit of the gaussian function $g_\Delta(x-x')$
+\begin{equation*}
+    \delta(x-x') = \lim_{\Delta \to 0} g_\Delta(x-x') = \lim_{\Delta \to 0}\frac{1}{\sqrt{\pi\Delta^2}} e^{\left( \frac{x-x'}{\Delta} \right)^2}
+\end{equation*}
+
+Now starting with
+\begin{equation*}
+    \int \delta(x-x') f(x') dx' = f(x)
+\end{equation*}
+on differentiating both sides with respect to $x$, we get
+\begin{equation*}
+    \der{}{x}\int \delta(x-x') f(x') dx' = \der{}{x}f(x)
+\end{equation*}
+\begin{equation*}
+    \int \delta'(x-x') f(x') dx' = f'(x)
+\end{equation*}
+thus, the action of $\delta'(x-x')$ can be described as
+\begin{equation*}
+    \delta'(x-x') \sim \delta(x-x') \der{}{x'}
+\end{equation*}
+and similarly
+\begin{equation*}
+    \nder{}{x}{n}\delta(x-x') \sim \delta(x-x') \nder{}{(x')}{n}
+\end{equation*}
+
+From fourier analysis, we know that a function $f(x)$ and its fourier transform $g(k)$ are related as
+\begin{equation*}
+    g(k) = \frac{1}{\sqrt{2\pi}} \int_{-\infty}^{\infty} e^{-ikx} f(x) dx
+\end{equation*}
+\begin{equation*}
+    f(x') = \frac{1}{\sqrt{2\pi}} \int_{-\infty}^{\infty} e^{ikx'} g(k) dk
+\end{equation*}
+combining them, we get
+\begin{equation*}
+    f(x') = \frac{1}{\sqrt{2\pi}} \int_{-\infty}^{\infty} e^{ikx'} \left( \frac{1}{\sqrt{2\pi}} \int_{-\infty}^{\infty} e^{-ikx} f(x) dx \right) dk
+\end{equation*}
+\begin{equation*}
+    f(x') = \int_{-\infty}^{\infty} \left( \frac{1}{2\pi} \int_{-\infty}^{\infty} e^{ik(x'-x)} dk \right) f(x) dx
+\end{equation*}
+on comparing with the sampling relation, we get another expression for the dirac delta function
+\begin{equation*}
+    \delta(x'-x) = \frac{1}{2\pi}\int_{-\infty}^{\infty}e^{-ik(x'-x)} dk
+\end{equation*}
+
+\subsection{Operators in Infinite Dimensions}
+
+Take the differentiation operator
+\begin{equation*}
+    \hat{D}\ket{f} = \ket{\der{f}{x}}
+\end{equation*}
+to find the elements of $\hat{D}$ in $\vecspace{X}$ basis
+\begin{equation*}
+    \bra{x}\hat{D}\ket{f} = \bra{x}\ket{\der{f}{x}} = \der{f}{x}
+\end{equation*}
+\begin{equation*}
+    \int \bra{x}\hat{D}\ket{x'}\bra{x'}\ket{f} dx' = \der{f}{x}
+\end{equation*}
+\begin{equation*}
+    \int \bra{x}\hat{D}\ket{x'}f(x') dx' = \der{f}{x}
+\end{equation*}
+but
+\begin{equation*}
+    \der{f}{x} = \int \delta'(x-x')f(x') dx'
+\end{equation*}
+thus,
+\begin{equation*}
+    \bra{x}\hat{D}\ket{x'} = D_{xx'} = \delta'(x-x') = \delta(x-x') \der{}{x'}
+\end{equation*}
+
+Notice that
+\begin{equation*}
+    D_{xx'} = \delta'(x-x')
+\end{equation*}
+\begin{equation*}
+    D_{x'x}^* = \delta'(x'-x)^* = \delta'(x'-x) = -\delta'(x-x') = -D_{xx'}
+\end{equation*}
+thus, $D$ is anti hermitian. But consider $K = -iD$,
+\begin{equation*}
+    K_{xx'} = -iD_{xx'} = -i\delta'(x-x')
+\end{equation*}
+\begin{equation*}
+    K_{x'x}^* = (-i\delta'(x'-x))^* = i\delta'(x'-x) = -i\delta'(x-x') = K_{xx'}
+\end{equation*}
+\begin{equation*}
+    K_{x'x}^* = K_{xx'}
+\end{equation*}
+however, for $K$ to be hermitian, it must satisfy
+\begin{equation*}
+    \bra{g}\hat{K}\ket{f} = \bra{f}\hat{K}\ket{g}^*
+\end{equation*}
+\begin{align*}
+    \bra{g}\hat{K}\ket{f} &= \int_{a}^{b} \int_{a}^{b} \bra{g}\ket{x}\bra{x}\hat{K}\ket{x'}\bra{x'}\ket{f} dx' dx \\
+    &= \int_{a}^{b} g^*(x) \left( -i \der{f}{x} \right) dx \\
+    &= -ig^*(x)f(x)\Biggr |_{a}^{b} + i\int_{a}^{b}\left( \der{}{x} g^*(x) \right) f(x) dx
+\end{align*}
+\begin{align*}
+    \bra{f}\hat{K}\ket{g} &= \int_{a}^{b} \int_{a}^{b} \bra{f}\ket{x}\bra{x}\hat{K}\ket{x'}\bra{x'}\ket{g} dx' dx \\
+    &= \int_{a}^{b} f^*(x) \left( -i \der{g}{x} \right) dx \\
+    \bra{f}\hat{K}\ket{g}^* &= i\int_{a}^{b} f(x) \left( \der{}{x} g^*(x) \right) dx
+\end{align*}
+thus $\bra{g}\hat{K}\ket{f} = \bra{f}\hat{K}\ket{g}^*$ only if $f$ and $g$ satisfy
+\begin{equation*}
+    -ig^*(x)f(x)\Biggr |_{a}^{b} = 0
+\end{equation*}
+this is the condition for $\hat{K}$ to be hermitian.
+
+Solving the eigenvalue problem for $\hat{K}$
+\begin{equation*}
+    \hat{K}\ket{k} = k\ket{k}
+\end{equation*}
+\begin{equation*}
+    \bra{x}\hat{K}\ket{k} = k\bra{x}\ket{k}
+\end{equation*}
+\begin{equation*}
+    \int \bra{x}\hat{K}\ket{x'}\bra{x'}\ket{k} dx' = k\bra{x}\ket{k}
+\end{equation*}
+Let $\bra{x}\ket{k} = \psi_k(x)$ be an eigenfunction of the operator $\hat{K}$
+\begin{equation*}
+    -i\der{}{x} \psi_k(x) = k\psi_k(x)
+\end{equation*}
+\begin{equation*}
+    \psi_k(x) = Ae^{ikx}
+\end{equation*}
+
+Thus, any real number $k$ is an eigenvalue of $\hat{K}$, with eigenfunction $\psi_k(x) = Ae^{ikx}$. To determine $A$, we use the fact that
+\begin{align*}
+    \bra{k}\ket{k'} &= \int_{-\infty}^{\infty} \bra{k}\ket{x}\bra{x}\ket{k'} dx \\
+    &= A^2\int_{-\infty}^{\infty} e^{-i(k-k')x} dx = \delta(k-k')
+\end{align*}
+but we have
+\begin{equation*}
+    \delta(k-k') = \frac{1}{2\pi}\int_{-\infty}^{\infty}e^{i(k-k')x} dx
+\end{equation*}
+On comparing, we get $A^2 = \frac{1}{2\pi}$, and $A = \frac{1}{\sqrt{2\pi}}$. Thus,
+\begin{equation*}
+    \ket{k} \sim \frac{1}{\sqrt{2\pi}} e^{ikx}
+\end{equation*}
+
+The elements of the matrix $K$ in $K$ basis are
+\begin{equation*}
+    K_{kk'} = \bra{k}\hat{K}\ket{k'} = k'\bra{k}\ket{k'} = k'\delta(k-k')
+\end{equation*}
+
+An interesting thing happens if we try to find the expansion of a function $\ket{f}$ in the $K$ basis.
+\begin{align*}
+    f(k) &= \bra{k}\ket{f} \\
+    &= \int_{-\infty}^{\infty} \bra{k}\ket{x}\bra{x}\ket{f} dx \\
+    &= \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty} e^{-ikx}f(x) dx \\
+\end{align*}
+thus, the familiar fourier transform is just the expansion of the function in another basis.
+
+Similar to how the $K$ basis is generated by the eigenkets of the hermitian $\hat{K}$ operator, the $X$ basis is generated by the eigenkets of the hermitian $\hat{X}$ operator.
+\begin{equation*}
+    \hat{X}\ket{x} = x\ket{x}
+\end{equation*}
+The matrix elements of the operator $\hat{X}$ in the $X$ basis are given as
+\begin{equation*}
+    X_{x'x} = \bra{x'}\hat{X}\ket{x} = x\bra{x'}\ket{x} = x\delta(x'-x)
+\end{equation*}
+To determine its action on functions, consider:
+\begin{equation*}
+    \hat{X}\ket{f} = \ket{\tilde{f}}
+\end{equation*}
+\begin{align*}
+    \bra{x}\hat{X}\ket{f} &= \int \bra{x}\hat{X}\ket{x'}\bra{x'}\ket{f} dx' \\
+    &= \int\delta(x-x')x'f(x') dx' = xf(x)
+\end{align*}
+Hence, $\hat{X}\ket{f} = \ket{xf}$
+\begin{equation*}
+    \tilde{f}(x) = xf(x)
+\end{equation*}
+
+If we compute the elements of $\hat{X}$ in $K$ basis
+\begin{align*}
+    X_{kk'} &= \bra{k}\hat{X}\ket{k'} \\
+    &= \int_{-\infty}^{\infty} \bra{k}\hat{X}\ket{x}\bra{x}\ket{k'} dx \\
+    &= \int_{-\infty}^{\infty} x\bra{k}\ket{x}\bra{x}\ket{k'} dx \\
+    &= \frac{1}{2\pi}\int_{-\infty}^{\infty} xe^{-i(k-k')x} dx \\
+    &= i\der{}{k}\left(\frac{1}{2\pi}\int_{-\infty}^{\infty} e^{-i(k-k')x} dx\right) \\
+    X_{kk'} &= i\delta'(k-k')
+\end{align*}
+
+The action of different operators can thus be summarised as
+\begin{itemize}
+    \item In $X$ basis
+    \begin{itemize}
+        \item $\hat{X} \sim x$
+        \item $\hat{K} \sim -i\der{}{x}$
+    \end{itemize}
+    \item In $K$ basis
+    \begin{itemize}
+        \item $\hat{X} \sim i\der{}{x}$
+        \item $\hat{K} \sim k$
+    \end{itemize}
+\end{itemize}
+Such operators are called conjugates.
+
+Consider a ket $\ket{f}$
+\begin{align*}
+    \bra{x}\hat{K}\hat{X}\ket{f} &= \bra{x}\hat{K}\ket{xf} \\
+    &= -i\der{}{x}(xf(x)) \\
+    &= -if(x) - ix\der{}{x}f(x)
+\end{align*}
+\begin{align*}
+    \bra{x}\hat{X}\hat{K}\ket{f} &= -i\bra{x}\hat{X}\ket{\der{f}{x}} \\
+    &= -ix\der{}{x}f(x) \\
+\end{align*}
+Thus,
+\begin{align*}
+    \bra{x}[\hat{X},\hat{K}]\ket{f} &= \bra{x}[\hat{X}\hat{K} - \hat{K}\hat{X}]\ket{f} \\
+    &= -ix\der{}{x}f(x) + if(x) + ix\der{}{x}f(x) \\
+    &= if(x) = \bra{x}i\hat{I}\ket{f}
+\end{align*}
+Hence, $[\hat{X}, \hat{K}] = i\hat{I}$.
+
+Almost all operators in quantum mechanics are functions of $\hat{X}$ and $\hat{P} = \hbar \hat{K}$, where $\hbar$ is a special constant which will be defined later.
+
+\begin{example}
+    A string fixed at its end points is displaced as
+    \begin{equation*}
+        \psi(x, 0) = \begin{cases}
+            \frac{2xh}{L} & 0 \leq x \leq \frac{L}{2} \\
+            \frac{2h}{L}(L-x) & \frac{L}{2} \leq x \leq L
+        \end{cases}
+    \end{equation*}
+    and follows the equation
+    \begin{equation*}
+        \nparder{2}{\psi}{t} = \nparder{2}{\psi}{x}
+    \end{equation*}
+    find the expression for $\psi(x, t)$.
+\end{example}
+\begin{solution}
+    Let $\ket{\psi(t)}$ be the ket that represents $\psi(x, t)$.
+    We know that
+    \begin{equation*}
+        K \sim -i\der{}{x}
+    \end{equation*}
+    \begin{equation*}
+        -K^2 \sim \nder{}{x}{2}
+    \end{equation*}
+    Thus,
+    \begin{equation*}
+        \ket{\ddot{\psi}(t)} = -\hat{K}^2\ket{\psi(t)}
+    \end{equation*}
+
+    To solve the eigenvalue problem of $\hat{K}^2$
+    \begin{align*}
+        \hat{K}^2\ket{\psi_k} &= k^2\ket{\psi_k} \\
+        -\nder{}{x}{2} \psi_k(x) &= k^2\psi_k(x) \\
+        \psi_k(x) &= A\cos(kx) + B\sin(kx)
+    \end{align*}
+
+    Applying the boundary conditions, we get
+    \begin{equation*}
+        \psi_k(0) = 0 \implies A = 0
+    \end{equation*}
+    \begin{equation*}
+        \psi_k(L) = 0 \implies \sin(kL) = 0 \implies kL = m\pi \implies k = \frac{m\pi}{L}
+    \end{equation*}
+
+    Thus the eigenvalues of the operator are $k_m^2 = \left(\frac{m\pi}{L}\right)^2$ where $m = 1, 2, 3, \dots$
+    
+    The corresponding eigenfunction is
+    \begin{equation*}
+        \psi_m(x) = \sqrt{\frac{2}{L}}\sin\left( \frac{m\pi x}{L} \right) \sim \ket{m}
+    \end{equation*}
+
+    In the eigenbasis
+    \begin{equation*}
+        \bra{m}\ket{\ddot{\psi}} = -\bra{m}\hat{K}^2\ket{\psi} = -k^2\bra{m}\ket{\psi}
+    \end{equation*}
+    \begin{equation*}
+        \nder{}{t}{2}\bra{m}\ket{\psi} = -\left(\frac{m\pi}{L}\right)^2\bra{m}\ket{\psi}
+    \end{equation*}
+    \begin{equation*}
+        \bra{m}\ket{\psi} = \bra{m}\ket{\psi(0)}\cos\left( \frac{m\pi t}{L} \right)
+    \end{equation*}
+    where $m = 1, 2, 3, \dots$
+
+    Thus, in the eigenbasis, we can write
+    \begin{equation*}
+        \ket{\psi(t)} = \sum_{m=1}^{\infty} \ket{m}\bra{m}\ket{\psi(0)}\cos\left( \frac{m\pi t}{L} \right)
+    \end{equation*}
+    and so we get the propagator as
+    \begin{equation*}
+        \hat{U}(t) = \sum_{m=1}^{\infty} \ket{m}\bra{m}\cos\left( \frac{m\pi t}{L} \right)
+    \end{equation*}
+
+    Now solving the equation
+    \begin{equation*}
+        \ket{\psi(t)} = \hat{U}(t)\ket{\psi(0)}
+    \end{equation*}
+    \begin{equation*}
+        \bra{x}\ket{\psi(t)} = \bra{x}\hat{U}(t)\ket{\psi(0)}
+    \end{equation*}
+    \begin{equation*}
+        \psi(x, t) = \int_{0}^{L}\bra{x}\hat{U}(t)\ket{x'}\bra{x'}\ket{\psi(0)}dx'
+    \end{equation*}
+    \begin{align*}
+        \bra{x}\hat{U}(t)\ket{x'} &= \sum_{m=1}^{\infty} \bra{x}\ket{m}\bra{m}\ket{x'}\cos\left( \frac{m\pi t}{L} \right) \\
+        &= \frac{2}{L}\sum_{m=1}^{\infty} \sin\left( \frac{m\pi x}{L} \right)\sin\left( \frac{m\pi x'}{L} \right)\cos\left( \frac{m\pi t}{L} \right)
+    \end{align*}
+
+    \begin{equation*}
+        \psi(x, t) = \frac{2}{L}\sum_{m=1}^{\infty}\sin\left( \frac{m\pi x}{L} \right)\cos\left( \frac{m\pi t}{L} \right)\int_{0}^{L} \sin\left( \frac{m\pi x'}{L} \right)\psi(x', 0)dx'
+    \end{equation*}
+
+    Now,
+    \begin{equation*}
+        \int_{0}^{L} \sin\left( \frac{m\pi x'}{L} \right)\psi(x', 0)dx' \\
+    \end{equation*}
+    \begin{equation*}
+        = \int_{0}^{\frac{L}{2}} \sin\left( \frac{m\pi x'}{L} \right)\psi(x', 0)dx' + \int_{\frac{L}{2}}^{L} \sin\left( \frac{m\pi x'}{L} \right)\psi(x', 0)dx'
+    \end{equation*}
+    \begin{equation*}
+        = \frac{4hL}{m^2\pi^2}\sin\left( \frac{\pi m}{2} \right)
+    \end{equation*}
+
+    Thus,
+    \begin{equation*}
+        \psi(x, t) = \frac{8h}{m^2\pi^2}\sum_{m=1}^{\infty}\sin\left( \frac{m\pi x}{L} \right)\cos\left( \frac{m\pi t}{L} \right)\sin\left( \frac{\pi m}{2} \right)
+    \end{equation*}
+\end{solution}
+
+% -------------------------------------------------
+% Chapter 2
+% -------------------------------------------------
+
+\chapter{Revision of Classical Mechanics}
+
+\section{Lagrangian}
+
+\subsection{Introduction}
+
+The Lagrangian $\lagrangian(q_i, \dot{q}_i)$ is the function which yeilds the equations of dynamics when fed into the euler-lagrange equation
+\begin{equation*}
+    \eulerlagrange{q_i}
+\end{equation*}
+For a conservative force, the lagrangian can be calculated using
+\begin{equation*}
+    \lagrangian = T - V
+\end{equation*}
+where, $T$ represents the kinetic energy of the system and $V$ represents the potential energy.
+If one defines the quantities
+\begin{equation*}
+    p_i = \parder{\lagrangian}{\dot{q}_i} \qquad F_i = \parder{\lagrangian}{q_i}
+\end{equation*}
+we get an equation equivalent to Newton's second law
+\begin{equation*}
+    \der{}{t}p_i = F_i
+\end{equation*}
+The quantities $F_i$ and $p_i$ are called the generalized force conjugate and canonical momentum conjugate to $q_i$ respectively.
+
+Suppose $\lagrangian$ depends on a certain velocity $\dot{q_i}$ but is independent of the coordinate $q_i$. Such a coordinate is called a cyclic coordinate and the corresponding $p_i$ is conserved.
+\begin{equation*}
+    \der{}{t}p_i = F_i = \parder{\lagrangian}{q_i} = 0
+\end{equation*}
+
+\subsection{The Electromagnetic Lagrangian}
+
+The electromagnetic lagrangian is defined as
+\begin{equation*}
+    \lagrangian = \frac{1}{2} m \vec{v}\cdot\vec{v} - q\phi + \frac{q}{c}\vec{v}\cdot\vec{A}
+\end{equation*}
+where the relation between $\vec{E}$, $\vec{B}$, $\vec{A}$ and $\phi$ is
+\begin{equation*}
+    \vec{E} = -\nabla \phi - \frac{1}{c} \parder{\vec{A}}{t}
+\end{equation*}
+\begin{equation*}
+    \vec{B} = \nabla \times \vec{A}
+\end{equation*}
+then we get the correct force laws.
+
+For this lagrangian, the combined euler-lagrange equations yeild
+\begin{equation*}
+    \der{}{t} \left( m\vec{v} + \frac{q}{c} \vec{A} \right) = -q\nabla \phi + \frac{q}{c} \nabla (\vec{v} \cdot \vec{A})
+\end{equation*}
+Thus, the canonical momentum is
+\begin{equation*}
+    \vec{p} = m\vec{v} + \frac{q}{c} \vec{A}
+\end{equation*}
+
+Rewriting the above equation, we get
+\begin{equation*}
+    \der{}{t} ( m\vec{v} ) = -q\nabla \phi + \frac{q}{c} \left( -\der{\vec{A}}{t} + \nabla (\vec{v} \cdot \vec{A})\right)
+\end{equation*}
+Now,
+\begin{equation*}
+    \der{\vec{A}}{t} = \parder{\vec{A}}{t} + (\vec{v}\cdot\nabla)\vec{A}
+\end{equation*}
+Thus,
+\begin{equation*}
+    \der{}{t} ( m\vec{v} ) = -q\nabla \phi - \frac{q}{c} \parder{\vec{A}}{t} + \frac{q}{c} \left(\nabla (\vec{v} \cdot \vec{A}) - (\vec{v}\cdot\nabla)\vec{A}\right)
+\end{equation*}
+\begin{equation*}
+    \der{}{t} ( m\vec{v} ) = -q\nabla \phi - \frac{q}{c} \parder{\vec{A}}{t} + \frac{q}{c} \left(\vec{v} \times (\nabla \times \vec{A})\right)
+\end{equation*}
+\begin{equation*}
+    \vec{F} = \vec{E} + \frac{q}{c} \left(\vec{v} \times \vec{B}\right)
+\end{equation*}
+
+Thus, we get the correct force laws.
+
+\subsection{Two Body Problem}
+
+Consider two masses $m_1$ and $m_2$ exerting equal and opposite forces on each other. The potential between them depends only on $\vec{r} = \vec{r}_1 - \vec{r}_2$. In this case it is better to trade $\vec{r}_1$ and $\vec{r}_2$ in favour of
+\begin{equation*}
+    \vec{r} = \vec{r_1} - \vec{r_2}
+\end{equation*}
+\begin{equation*}
+    \vec{r}_{cm} = \frac{m_1\vec{r}_1 + m_2\vec{r}_2}{m_1+m_2}
+\end{equation*}
+Using these, we get
+\begin{equation*}
+    \vec{r}_1 = \vec{r}_{cm} + \frac{m_2\vec{r}}{m_1+m_2}
+\end{equation*}
+\begin{equation*}
+    \vec{r}_2 = \vec{r}_{cm} - \frac{m_1\vec{r}}{m_1+m_2}
+\end{equation*}
+with which we can rewrite the lagrangian
+\begin{equation*}
+    \lagrangian = \frac{1}{2}m_1\| \vec{\dot{r_1}} \|^2 + \frac{1}{2}m_2\| \vec{\dot{r_2}} \|^2 - V(\vec{r_1} - \vec{r_2})
+\end{equation*}
+as
+\begin{equation*}
+    \lagrangian = \frac{1}{2}(m_1+m_2)\| \vec{\dot{r}}_{cm} \|^2 + \frac{1}{2}\frac{m_1m_2}{m_1+m_2}\| \vec{\dot{r}} \|^2 - V(\vec{r})
+\end{equation*}
+
+Notice that the lagrangian is independent of the coordinate $\vec{r}_{cm}$. Due to this, if we write the euler lagrange equations we will find that the components of the momentum of the centre of mass remains a constant. This is the familiar law conservation of momentum in two body problem.
+
+\section{Hamiltonian}
+
+\subsection{Introduction}
+
+In lagrangian mechanics, $q_i$ and $\dot{q}_i$ are independent quantities, while $p_i$ is derived as
+\begin{equation*}
+    p_i = \parder{\lagrangian}{\dot{q}_i}
+\end{equation*}
+In hamiltonian mechanics, the roles are reversed. Hamiltonian $\hamiltonian$ becomes a function of $\hamiltonian(q, p)$ and $\dot{q}_i$ is derived as
+\begin{equation*}
+    \dot{q}_i = \parder{\hamiltonian}{p_i}
+\end{equation*}
+The procedure for such a change is called the \textbf{Legendre Transformation}. Suppose we have a function $f(x)$ with
+\begin{equation*}
+    u(x) = \der{f}{x}
+\end{equation*}
+Let it be possible to invert $u(x)$ to get $x(u)$. Then we define
+\begin{equation*}
+    g(u) = u\cdot x(u) - f(x(u))
+\end{equation*}
+\begin{equation*}
+    \der{g}{u} = x(u) + u \der{x}{u} - \der{f}{x} \der{x}{u}
+\end{equation*}
+\begin{equation*}
+    x(u) = \der{g}{u}
+\end{equation*}
+Thus, in transforming from $f(x)$ to $g(u)$, the roles of $x$ and $u$ are changed. The functions $f$ and $g$ are called Legendre Transforms of each other, and the equation relating them is called the \textbf{Legendre Transformation.}
+
+In general, if we have a function $f = f(x_1, \dots, x_n)$, we can eliminate a subset $\{x_i : i=1\dots j\}$ in favour of $u_i = \parder{f}{x_i}$ by the transformation
+\begin{equation*}
+    g(u_1, u_2, \dots, u_j, x_{j+1}, \dots, x_n) = \sum_{i=1}^{j} u_ix_i - f(x_1, \dots, x_n)
+\end{equation*}
+\begin{equation*}
+    \parder{g}{u_i} = x_i + u_i \der{x_i}{u_i} - \parder{f}{x_i}\der{x_i}{u_i} = x_i
+\end{equation*}
+
+Using this, we define
+\begin{equation*}
+    \hamiltonian = \sum_{i=1}^{n}p_i\dot{q}_i - \lagrangian
+\end{equation*}
+where $\dot{q}$ is written in terms of $p$ and $q$.
+Notice that
+\begin{align*}
+    \parder{\hamiltonian}{p_i} &= \parder{}{p_i}\left( \sum_{j=1}^{n} p_j\dot{q}_j - \lagrangian \right) \\
+    &= \dot{q}_i + \sum_{j=1}^{n} p_j \parder{\dot{q}_j}{p_i} - \sum_{j=1}^{n} \parder{\lagrangian}{\dot{q}_j} \parder{\dot{q}_j}{p_i} \\
+    \parder{\hamiltonian}{p_i} &= \dot{q}_i
+\end{align*}
+\begin{align*}
+    \parder{\hamiltonian}{q_i} &= \parder{}{q_i}\left( \sum_{j=1}^{n} p_j\dot{q}_j - \lagrangian \right) \\
+    &= \sum_{j=1}^{n} p_j\parder{\dot{q}_j}{q_i} - \parder{\lagrangian}{q_i} - \sum_{j=1}^{n} \parder{\lagrangian}{\dot{q}_j} \parder{\dot{q}_j}{q_i} \\
+    \parder{\hamiltonian}{q_i} &= - \parder{\lagrangian}{q_i} = -p_i
+\end{align*}
+So,
+\begin{equation*}
+    \parder{\hamiltonian}{p_i} = \dot{q}_i \qquad \parder{\hamiltonian}{q_i} = -p_i
+\end{equation*}
+these are the two equations of hamiltonian mechanics.
+If the force is conservative 
+\begin{equation*}
+    \hamiltonian = T + V
+\end{equation*}
+
+\subsection{The Electromagnetic Hamiltonian}
+
+Recall the expression for the electromagnetic lagrangian
+\begin{equation*}
+    \lagrangian = \frac{1}{2} m \vec{v}\cdot\vec{v} - q\phi + \frac{q}{c}\vec{v}\cdot\vec{A}
+\end{equation*}
+\begin{equation*}
+    \vec{p} = m\vec{v} + \frac{q}{c}\vec{A}
+\end{equation*}
+
+By applying the legendre transform, we get
+\begin{equation*}
+    \hamiltonian = \vec{p} \cdot \vec{v} - \lagrangian
+\end{equation*}
+\begin{equation*}
+    \hamiltonian = m\vec{v} \cdot \vec{v} + \frac{q}{c}\vec{A} \cdot \vec{v} - \frac{1}{2} m \vec{v}\cdot\vec{v} + q\phi - \frac{q}{c}\vec{v}\cdot\vec{A}
+\end{equation*}
+\begin{equation*}
+    \hamiltonian = \frac{1}{2}m\| \vec{v} \|^2 + q\phi
+\end{equation*}
+At first glance, one might think the expression looks wrong, as how can the magnetic factor $\vec{A}$ not have any contribution in the hamiltonian. However, we must be careful the hamiltonian should be written in proper variables, position and momentum. Substituting $\vec{v} = \frac{1}{m}(\vec{p}-\frac{q}{c}\vec{A})$, we get
+\begin{equation*}
+    \hamiltonian = \frac{1}{2m}\left \| \vec{p}-\frac{q}{c}\vec{A} \right \|^2 + q\phi
+\end{equation*}
+
+\subsection{Cyclic Coordinates and Conserved Quantities}
+
+Similar to the case of lagrangian, if a coordinate $q_i$ is missing in $\hamiltonian$, then
+\begin{equation*}
+    \dot{p}_i = -\parder{\hamiltonian}{q_i} = 0
+\end{equation*}
+and thus, $p_i$ is conserved.
+
+There might as well be other quantities which are conserved in addition to the canonical momenta. Let $\omega(p, q)$ be some function of state variables with no explicit time dependence. Then,
+\begin{align*}
+    \der{\omega}{t} &= \sum_{i} \left( \parder{\omega}{q_i} \dot{q_i} + \parder{\omega}{p_i} \dot{p_i} \right) \\
+    &= \sum_{i} \left( \parder{\omega}{q_i} \parder{\hamiltonian}{p_i} - \parder{\omega}{p_i} \parder{\hamiltonian}{q_i} \right)
+\end{align*}
+define another quantity $\{\lambda, \omega\}$ as
+\begin{equation*}
+    \{\lambda, \omega\} = \sum_{i} \left( \parder{\lambda}{q_i} \parder{\omega}{p_i} - \parder{\lambda}{p_i} \parder{\omega}{q_i} \right)
+\end{equation*}
+then for any variable $\omega$, if we have $\{\omega, \hamiltonian\} = 0$, then $\omega$ is conserved with time. In particular, $\hamiltonian$ itself is conserved and represents the total energy of the system in case of a conservative force field. The quantity $\{\lambda, \omega\}$ is called the \textbf{Poisson Bracket} of $\lambda$ and $\omega$.
+
+Some properties of the poisson bracket are:
+\begin{itemize}
+    \item $\{\omega, \lambda\} = -\{\lambda, \omega\}$
+    \item $\{\omega, \lambda + \sigma\} = \{\omega, \lambda\} + \{\omega, \sigma\}$
+    \item $\{\omega, \lambda\sigma\} = \lambda\{\omega, \sigma\} + \{\omega, \lambda\}\sigma$
+\end{itemize}
+
+Also notice that:
+\begin{itemize}
+    \item $\{q_i, q_j\} = \{p_i, p_j\} = 0$
+    \item $\{q_i, p_j\} = \delta_{ij}$
+\end{itemize}
+
+The hamiltonian equations can thus be equivalently written as
+\begin{equation*}
+    \dot{q}_i = \{q_i, \hamiltonian\} \qquad \dot{p}_i = \{p_i, \hamiltonian\}
+\end{equation*}
+
+\section{Transformation of Coordinates}
+
+\subsection{Point Transformation}
+
+The Euler-Lagrange equations are invariant under an arbitary change of coordinates in the configuration space.
+The numerical value of $\lagrangian$ is unchanged although the expression might change.
+\begin{equation*}
+    q \to \bar{q}(q)
+\end{equation*}
+The response of velocities to the transform is
+\begin{equation*}
+    \dot{\bar{q_i}} = \der{\bar{q_i}}{t} = \sum_{j}\dot{q_j} \parder{\bar{q_i}}{q_j}
+\end{equation*}
+The response of momenta can be derived using
+\begin{equation*}
+    \bar{p}_i = \parder{\lagrangian}{\dot{\bar{q}}_i} = \sum_j \parder{\lagrangian}{\dot{q}_j} \parder{\dot{q}_j}{\dot{\bar{q}}_i}
+\end{equation*}
+Now,
+\begin{equation*}
+    \parder{\lagrangian}{\dot{q}_j} = p_j
+\end{equation*}
+\begin{equation*}
+    \dot{q}_j = \sum_k \parder{q_j}{\bar{q}_k} \dot{\bar{q}}_k \implies \parder{\dot{q}_j}{\dot{\bar{q}}_i} = \parder{q_j}{\bar{q}_i}
+\end{equation*}
+So,
+\begin{equation*}
+    \bar{p}_i = \sum_j p_j \parder{q_j}{\bar{q}_i}
+\end{equation*}
+
+Similarly, the Hamilton's equations are also invariant under the transformation
+\begin{equation*}
+    (q, p) \to (\bar{q}, \bar{p})
+\end{equation*}
+\begin{equation*}
+    \dot{\bar{q}}_i = \parder{\hamiltonian}{\bar{p}_i} \qquad \dot{\bar{p}}_i = -\parder{\hamiltonian}{\bar{q}_i}
+\end{equation*}
+
+This transformation,
+\begin{equation*}
+    q_i \to \bar{q}_i(q_1, \dots, q_n)
+\end{equation*}
+\begin{equation*}
+    \bar{p}_i = \sum_{j}\parder{q_j}{\bar{q_i}} p_j
+\end{equation*}
+is called a \textbf{point transformation.}
+
+\subsection{Canonical Transformation}
+
+In Hamiltonian formalism, point transformation is unnecessarily restrictive. A more general transformation is
+\begin{align*}
+    q &\to \bar{q}(q, p) \\
+    p &\to \bar{p}(q, p)
+\end{align*}
+
+Although all sets of such transformationss of these $2n$ independent coordinates are adequate, not all will preserve the canonical form of Hamilton's equations.
+If the transformed coordinated do follow the Hamilton's equations, such coordinates are called canonical coordinates and such a transformation is called a \textbf{canonical transformation.}
+A point transformation is a special case of a canonical transformation.
+
+Now, for any function $\omega(q, p)$
+\begin{equation*}
+    \dot{\omega} = \{\omega, \hamiltonian\} = \sum_i \left( \parder{\omega}{q_i}\parder{\hamiltonian}{p_i} - \parder{\omega}{p_i}\parder{\hamiltonian}{q_i} \right)
+\end{equation*}
+Applying this to $\bar{q}_j(q, p)$ and $\bar{p}_j(q, p)$, we get
+\begin{align*}
+    \dot{\bar{q}}_j &= \{\bar{q}_j, \hamiltonian\} = \sum_i \left( \parder{\bar{q}_j}{q_i}\parder{\hamiltonian}{p_i} - \parder{\bar{q}_j}{p_i}\parder{\hamiltonian}{q_i} \right) \\
+    \dot{\bar{p}}_j &= \{\bar{p}_j, \hamiltonian\} = \sum_i \left( \parder{\bar{p}_j}{q_i}\parder{\hamiltonian}{p_i} - \parder{\bar{p}_j}{p_i}\parder{\hamiltonian}{q_i} \right)
+\end{align*}
+If we write $\hamiltonian$ as a function of $(\bar{q}, \bar{p})$, we get
+\begin{align*}
+    \parder{\hamiltonian}{p_i} &= \sum_k \left( \parder{\hamiltonian}{\bar{q}_k}\parder{\bar{q}_k}{p_i} + \parder{\hamiltonian}{\bar{p}_k}\parder{\bar{p}_k}{p_i} \right) \\
+    \parder{\hamiltonian}{q_i} &= \sum_k \left( \parder{\hamiltonian}{\bar{q}_k}\parder{\bar{q}_k}{q_i} + \parder{\hamiltonian}{\bar{p}_k}\parder{\bar{p}_k}{q_i} \right)
+\end{align*}
+On substitution and simplification, we get
+\begin{align*}
+    \dot{\bar{q}}_j &= \sum_k \left( \parder{\hamiltonian}{\bar{q}_k} \{\bar{q}_j, \bar{q}_k\} + \parder{\hamiltonian}{\bar{p}_k} \{\bar{q}_j, \bar{p}_k\} \right) \\
+    \dot{\bar{p}}_j &= \sum_k \left( \parder{\hamiltonian}{\bar{q}_k} \{\bar{p}_j, \bar{q}_k\} + \parder{\hamiltonian}{\bar{p}_k} \{\bar{p}_j, \bar{p}_k\} \right)
+\end{align*}
+For these equations to reduce to canonical equations, we must have
+\begin{equation*}
+    \{\bar{q}_j, \bar{q}_k\} = \{\bar{p}_j, \bar{p}_k\} = 0
+\end{equation*}
+\begin{equation*}
+    \{\bar{q}_j, \bar{p}_k\} = \delta_{jk}
+\end{equation*}
+Thus, if the new variables satisfy these conditions then they are canonical.
+
+Note that the poisson bracket of two variables $\{\omega, \sigma\}$ is invariant under canonical transformations.
+
+\begin{equation*}
+    \{\omega, \sigma\}_{(q, p)} = \{\omega, \sigma\}_{(\bar{q}, \bar{p})}
+\end{equation*}
+
+\begin{example}
+    A new set of coordinates are defined as
+    \begin{equation*}
+        \bar{q} = \ln\left( \frac{\sin p}{q} \right) \qquad \bar{p} = q\cot p
+    \end{equation*}
+    are they canonical?
+\end{example}
+
+\begin{solution}
+    Calculating the poisson brackets
+
+    \begin{align*}
+        \{\bar{q}, \bar{p}\} &= \parder{\bar{q}}{q} \parder{\bar{p}}{p} - \parder{\bar{q}}{p} \parder{\bar{p}}{q} \\
+        &= -\left(\frac{1}{q}\right)(-q\csc^2p) - (\cot p) (\cot p) \\
+        &= 1
+    \end{align*}
+
+    Thus, they are canonical.
+\end{solution}
+
+\subsection{Active Transformations}
+
+The transformations discussed so far were passive transformations. Consider a restricted class of transformations called regular transformations which preserve the range of variables.
+Instead of viewing $(\bar{q}, \bar{p})$ as the same point in a new coordinate system, we can interpret it as a new point in the same coordinate system. That will be an active transformation.
+
+Under an active change, the numerical value of a dynamic variable $\omega(q, p)$ generally changes. $\omega(\bar{q}, \bar{p})$ is evaluated simply by substituting $p=\bar{p}$ and $q=\bar{q}$ in $w(q, p)$.
+We say that $\omega$ is invariant under the regular transformation $(q, p) \to (\bar{q}, \bar{p})$ only if
+\begin{equation*}
+    \omega(\bar{q}, \bar{p}) = \omega(q, p)
+\end{equation*}
+
+\subsection{Symmetry}
+
+Consider the function
+\begin{equation*}
+    f(x, y) = x^2+y^2
+\end{equation*}
+if we make the following transformation
+\begin{align*}
+    x &\to \bar{x} = x\cos\theta - y\sin\theta \\
+    y &\to \bar{y} = x\sin\theta + y\cos\theta
+\end{align*}
+we will have
+\begin{align*}
+    f(\bar{x}, \bar{y}) &= \bar{x}^2 + \bar{y}^2 \\
+    &= x^2+y^2
+\end{align*}
+or $f$ is invariant. We say that $f$ is symmetric under the above transformation. If $\theta$ is infinitesimal, ie $\theta\to\varepsilon$,
+\begin{align*}
+    \bar{x} &= x\cos\varepsilon - y\sin\varepsilon = x-y\varepsilon \\
+    \bar{y} &= x\sin\varepsilon + y\cos\varepsilon = x\varepsilon + y
+\end{align*}
+\begin{align*}
+    f(\bar{x}, \bar{y}) &= \bar{x}^2 + \bar{y}^2 \\
+    &= (x-y\varepsilon)^2 + (x\varepsilon + y)^2 \\
+    &= x^2 - 2xy\varepsilon + 2xy\varepsilon + y^2 \\
+    &= x^2+y^2
+\end{align*}
+Thus $f$ is symmetric under this infinitesimal transformation.
+
+Next consider the function $\hamiltonian(q, p)$. If $\hamiltonian$ is invariant under the following infinitesimal canonical transformation (one can check that the transformation is indeed canonical):
+\begin{align*}
+    q_i &\to \bar{q_i} = q_i + \varepsilon \parder{g}{p_i} = q_i + \delta q_i \\
+    p_i &\to \bar{p_i} = p_i - \varepsilon \parder{g}{q_i} = p_i + \delta p_i
+\end{align*}
+where $g(q, p)$ is a dynamic variable, then $g$ is conserved. The function $g$ in such a case is called the \textbf{generator of the transformation}.
+
+To show that $g$ is conserved, we use the fact that $\hamiltonian$ is invariant. We can calculate $\delta \hamiltonian$ as
+\begin{align*}
+    \delta\hamiltonian &= \sum_{i} \left( \parder{\hamiltonian}{q_i} \delta q_i + \parder{\hamiltonian}{p_i} \delta p_i \right) \\
+    &= \sum_{i} \varepsilon\left( \parder{\hamiltonian}{q_i} \parder{g}{p_i} - \parder{\hamiltonian}{p_i} \parder{g}{q_i} \right) \\
+    &= \varepsilon \{\hamiltonian, g\} = 0 \\
+    \implies \dot{g} &= \{g, \hamiltonian\} = 0 \implies g \text{ is conserved.}
+\end{align*}
+In general, the response of any variable to the infinitesimal transform is
+\begin{equation*}
+    \delta\omega = \varepsilon\{\omega, g\}
+\end{equation*}
+
+With this we have a way to create a transformation that conserves a specific quantity. To illustrate that we use the following three examples
+\begin{example}
+    Consider $g(x, p) = p$ in a one dimensional motion. Find an infinitesimal transformation that conserves $g$.
+\end{example}
+\begin{solution}
+    \begin{align*}
+        \delta x &= \varepsilon\{x, p\} = \varepsilon \\
+        \delta p &= \varepsilon\{p, p\} = 0
+    \end{align*}
+    Thus, invariance of $\hamiltonian$ under the infinitesimal transformation
+    \begin{equation*}
+        x \to x+\varepsilon
+    \end{equation*}
+    conserves $g(x, p)=p$.
+\end{solution}
+
+\begin{example}
+    Show that $g = p_1 + p_2$, the total momentum, is the generator of infinitesimal translation for a two particle system.
+\end{example}
+\begin{solution}
+    Let the position and momenta of the two particles be $q_1$, $q_2$ and $p_1$, $p_2$ respectively.
+
+    \begin{align*}
+        \delta x_1 &= \varepsilon\{x_1, g\} = \varepsilon \\
+        \delta x_2 &= \varepsilon\{x_2, g\} = \varepsilon \\
+        \delta p_1 &= \varepsilon\{p_1, g\} = 0 \\
+        \delta p_2 &= \varepsilon\{p_2, g\} = 0 \\
+    \end{align*}
+    Thus, invariance of $\hamiltonian$ under the infinitesimal transformation
+    \begin{align*}
+        x_1 &\to x_1+\varepsilon \\
+        x_2 &\to x_2 + \varepsilon
+    \end{align*}
+    conserves $g=p_1+p_2$.
+\end{solution}
+
+\begin{example}
+    Find the infinitesimal transformation that conserves $g = l_z = xp_y - yp_x$.
+\end{example}
+\begin{solution}
+    Let the position and momenta in xy-plane be $x$, $y$, $p_x$, and $p_y$.
+
+    \begin{align*}
+        \delta x &= \varepsilon\{x, g\} = \varepsilon\left[ \parder{g}{p_x} \right] = -\varepsilon y \\
+        \delta y &= \varepsilon\{y, g\} = \varepsilon\left[ \parder{g}{p_y} \right] = \varepsilon x \\
+        \delta p_x &= \varepsilon\{p_x, g\} = \varepsilon\left[- \parder{g}{x}\right] = -\varepsilon p_y \\
+        \delta p_y &= \varepsilon\{p_y, g\} = \varepsilon\left[- \parder{g}{y}\right] = \varepsilon p_x \\
+    \end{align*}
+
+    Since $\varepsilon$ is infinitesimal, let $\varepsilon = \delta t$. The corresponding differential equations become
+    \begin{equation*}
+        \der{x}{t} = -y \qquad \der{y}{t} = x \qquad \der{p_x}{t} = -p_y \qquad \der{p_y}{t} = p_x
+    \end{equation*}
+
+    On solving the equations in $x$ and $y$, we get
+    \begin{align*}
+        x &= A\cos t + B\sin t \\
+        y &= C\cos t + D\sin t
+    \end{align*}
+
+    using $x=x_0$ and $y=y_0$, $\der{x}{t} = -y_0$, $\der{y}{y} = x_0$ at $t=0$,
+    \begin{align*}
+        \bar{x} &= x\cos t - y\sin t \\
+        \bar{y} &= x\sin t + y\cos t \\
+    \end{align*}
+
+    Similarly,
+    \begin{align*}
+        \bar{p}_x &= p_x\cos t - p_y\sin t \\
+        \bar{p}_y &= p_x\sin t + p_y\cos t \\
+    \end{align*}
+
+    Thus, invariance of $\hamiltonian$ under the infinitesimal rotation in the xy-plane conserves $l_z$.
+\end{solution}
+
+Another important consequence of the fact that $\hamiltonian$ is invariant under a regular, canonical but not necessarily infinitesimal transformation $(q, p) \to (\bar{q}, \bar{p})$
+is that if $(q(t), p(t))$ is a solution to the equations of motion, so is the transformed trajectory $(\bar{q}(t), \bar{p}(t))$.
+
+To prove it, imagine a trajectory $(q(t), p(t))$ in phase space that satisfies the equation along with its image trajectory under the regular canonical transformation $(\bar{q}(t), \bar{p}(t))$.
+Now $\bar{q_j}(q, p)$ is just another dynamic variable. Hence, it follows the relation
+\begin{equation*}
+    \dot{\bar{q}}_j = \{\bar{q}_j, \hamiltonian(q, p)\}_{(q, p)}
+\end{equation*}
+computing the poisson bracket by making use of the fact that $\hamiltonian(q, p) = \hamiltonian(\bar{q}, \bar{p})$, we get
+
+\begin{align*}
+    \{\bar{q}_j, \hamiltonian(q, p)\}_{(q, p)} &= \{\bar{q}_j, \hamiltonian(\bar{q}, \bar{p})\}_{(q, p)} \\
+    &= \sum_i \left( \parder{\bar{q}_j}{q_i}\parder{\hamiltonian(\bar{q}, \bar{p})}{p_i} - \parder{\bar{q}_j}{p_i}\parder{\hamiltonian(\bar{q}, \bar{p})}{q_i} \right) \\
+\end{align*}
+Now, we have
+\begin{align*}
+    \parder{\hamiltonian(\bar{q}, \bar{p})}{p_i} &= \sum_{k} \left( \parder{\hamiltonian(\bar{q}, \bar{p})}{\bar{q}_k} \parder{\bar{q}_k}{p_i} + \parder{\hamiltonian(\bar{q}, \bar{p})}{\bar{p}_k} \parder{\bar{p}_k}{p_i} \right) \\
+    \parder{\hamiltonian(\bar{q}, \bar{p})}{q_i} &= \sum_{k} \left( \parder{\hamiltonian(\bar{q}, \bar{p})}{\bar{q}_k} \parder{\bar{q}_k}{q_i} + \parder{\hamiltonian(\bar{q}, \bar{p})}{\bar{p}_k} \parder{\bar{p}_k}{q_i} \right)
+\end{align*}
+On substitution and some rearranging, we get
+\begin{equation*}
+    \sum_i \left( \parder{\bar{q}_j}{q_i}\parder{\hamiltonian(\bar{q}, \bar{p})}{p_i} - \parder{\bar{q}_j}{p_i}\parder{\hamiltonian(\bar{q}, \bar{p})}{q_i} \right) \\
+\end{equation*}
+\begin{equation*}
+    = \sum_i \left( \parder{\bar{q}_j}{q_i} \sum_{k} \left( \parder{\hamiltonian}{\bar{q}_k} \parder{\bar{q}_k}{p_i} + \parder{\hamiltonian}{\bar{p}_k} \parder{\bar{p}_k}{p_i} \right) - \parder{\bar{q}_j}{p_i}\sum_{k} \left( \parder{\hamiltonian}{\bar{q}_k} \parder{\bar{q}_k}{q_i} + \parder{\hamiltonian}{\bar{p}_k} \parder{\bar{p}_k}{q_i} \right) \right) \\
+\end{equation*}
+\begin{equation*}
+    = \sum_{k}\left( \parder{\hamiltonian}{\bar{q}_k}\sum_{i}\left( \parder{\bar{q}_j}{q_i}\parder{\bar{q}_k}{p_i} - \parder{\bar{q}_j}{p_i}\parder{\bar{q}_k}{q_i} \right) + \parder{\hamiltonian}{\bar{p}_k}\sum_{i}\left( \parder{\bar{q}_j}{q_i}\parder{\bar{p}_k}{p_i} - \parder{\bar{q}_j}{p_i}\parder{\bar{p}_k}{q_i} \right) \right)
+\end{equation*}
+\begin{equation*}
+    = \sum_{k}\left( \parder{\hamiltonian}{\bar{q}_k}\{\bar{q}_j, \bar{q}_k\} + \parder{\hamiltonian}{\bar{p}_k}\{\bar{q}_j, \bar{p}_k\} \right)
+\end{equation*}
+\begin{equation*}
+    \dot{\bar{q}}_j = \parder{\hamiltonian(\bar{q}, \bar{p})}{\bar{p}_j}
+\end{equation*}
+A similar reasoning will show that
+\begin{equation*}
+    \dot{\bar{p}}_j = -\parder{\hamiltonian(\bar{q}, \bar{p})}{\bar{q}_j}
+\end{equation*}
+Thus, the image moves according to the hamilton's equations.
+
+There is a useful relation between $S$ and $E$ which will be used later
+\begin{equation*}
+    \parder{S_{cl}(x_f, t_f;x_i, t_i)}{t_f} = -\hamiltonian(t_f)
+\end{equation*}
+in problems where the total energy $E$ is conserved, we may write
+\begin{equation*}
+    \parder{S_{cl}(x_f, t_f;x_i, t_i)}{t_f} = -E
+\end{equation*}
 
 % -------------------------------------------------
 % References
